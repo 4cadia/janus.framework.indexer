@@ -1,8 +1,7 @@
-var ipfsClient = require('ipfs-http-client');
-// import ipfsClient from 'ipfs-http-client';
+const ipfsClient = require('ipfs-http-client');
 const DOMParser = require('xmldom').DOMParser;
 import IndexedHtml from '../../Domain/Entity/IndexedHtml'
-
+import IndexerSmService from './IndexerSmService';
 
 export function GetMetaTag(ipfsHtml, metaName): string {
     let metas = ipfsHtml.getElementsByTagName('meta');
@@ -17,9 +16,16 @@ export function GetTitleValue(ipfsHtml): string {
     let title = ipfsHtml.getElementsByTagName('title')[0];
     return title.textContent;
 }
-
 export default class Web3IndexerService {
-    async IndexIpfsHostedHtml(ipfsHash: string) {
+    // public _indexerSmService: IndexerSmService;
+
+    constructor() {
+        //inject   
+    }
+
+    async IndexIpfsHostedHtml(ipfsHash: string, ownerAddress: string) {
+        let _indexerSmService = new IndexerSmService();
+
         const ipfs = new ipfsClient('localhost', '5001');
         let indexed = new IndexedHtml();
         await ipfs.get(ipfsHash, function (err, files) {
@@ -29,10 +35,12 @@ export default class Web3IndexerService {
                 let title = GetTitleValue(htmlDoc);
                 let tags = GetMetaTag(htmlDoc, "keywords");
                 let description = GetMetaTag(htmlDoc, "description");
+                indexed.IpfsHash = ipfsHash;
                 indexed.Title = title;
                 indexed.Tags = tags;
                 indexed.Description = description;
             });
+            _indexerSmService.IndexContent(indexed, ownerAddress);
             return indexed;
         });
     }

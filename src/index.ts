@@ -2,7 +2,7 @@ import Web3IndexerService from './Application/Service/Web3IndexerService'
 export default class Spider {
     public IndexIpfsHostedHtml(ipfsHash: string) {
         var service = new Web3IndexerService();
-        return service.IndexIpfsHostedHtml(ipfsHash);
+        return service.IndexIpfsHostedHtml(ipfsHash, "123abc");
     }
 }
 
