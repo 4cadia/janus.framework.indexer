@@ -23,43 +23,39 @@ export function GetTitleValue(ipfsHtml): string {
     return title.textContent;
 }
 
-@injectable()
+
 export default class Web3IndexerService implements IWeb3IndexerService {
     _ipfsClient;
-    constructor(@inject("IIndexerSmService")
-    public _indexerSmService: IIndexerSmService) {
+    constructor() {
         this._ipfsClient = new ipfsClient('localhost', '5001');
     }
-
-    public async IndexIpfsHostedHtml(ipfsHash: string) {
+    public IndexIpfsHostedHtml(ipfsHash: string, callback: any) {
         let indexed = new IndexedHtml();
         let result = new IndexResult();
-        await new Promise <IndexResult> ((resolve, reject) => {
-            this._ipfsClient.get(ipfsHash, function (error, files) {
-    
-                // result.Success = !error;
-                // if (!result.Success) {
-                //     result.Message = error.message;
-                //     return result;
-                // }
-    
-                files.forEach((file) => {
-    
-                    let html = file.content.toString('utf8');
-                    let htmlDoc = new DOMParser().parseFromString(html, "text/xml");
-                    let title = GetTitleValue(htmlDoc);
-                    let tags = GetMetaTag(htmlDoc, "keywords");
-                    let description = GetMetaTag(htmlDoc, "description");
-                    indexed.IpfsHash = ipfsHash;
-                    indexed.Title = title;
-                    indexed.Tags = tags.split(" ");
-                    indexed.Description = description;
-                    result.IndexedContent = indexed;
-                });
+        return this._ipfsClient.get(ipfsHash, (error, files) => {
+            // result.Success = !error;
+            // if (!result.Success) {
+            //     result.Message = error.message;
+            //     return result;
+            // }
+
+            files.forEach((file) => {
+
+                let html = file.content.toString('utf8');
+                let htmlDoc = new DOMParser().parseFromString(html, "text/xml");
+                let title = GetTitleValue(htmlDoc);
+                let tags = GetMetaTag(htmlDoc, "keywords");
+                let description = GetMetaTag(htmlDoc, "description");
+                indexed.IpfsHash = ipfsHash;
+                indexed.Title = title;
+                indexed.Tags = tags.split(" ");
+                indexed.Description = description;
+                result.IndexedContent = indexed;
             });
-            return result;
-        }); 
-        return this._indexerSmService.IndexContent(result.IndexedContent);
+            callback(result);
+        });
     }
+
+
 }
 
