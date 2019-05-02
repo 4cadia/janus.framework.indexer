@@ -1,5 +1,8 @@
 const Web3 = require('web3');
 import IndexedHtml from '../../Domain/Entity/IndexedHtml';
+import { inject, injectable } from 'tsyringe';
+import SpiderConfig from '../../Domain/Entity/SpiderConfig';
+import IIndexerSmService from '../Interface/IIndexerSmService';
 const indexerSmAddress = "0xf32287E571E4eF770AA7be1d6253E39A23805332";
 const indexerSmAbi = [
     {
@@ -69,23 +72,22 @@ const indexerSmAbi = [
 //     return web3.utils.isAddress(address);
 // }
 
-export default class IndexerSmService {
-    _ownerAddress: string;
+@injectable()
+export default class IndexerSmService implements IIndexerSmService {
     _web3;
     _indexerSm;
-
-    constructor(ownerAddress: string) {
-        this._ownerAddress = ownerAddress;
+    constructor(@inject("SpiderConfig")
+    private _spiderConfig: SpiderConfig) {
         this._web3 = new Web3("http://127.0.0.1:9545");
         this._indexerSm = new this._web3.eth.Contract(indexerSmAbi, indexerSmAddress);
     }
 
-    public IndexContent(indexedHtml: IndexedHtml, ownerAddress: string) {
+    public IndexContent(indexedHtml: IndexedHtml) {
         this._indexerSm.methods.addWebSite(indexedHtml.IpfsHash,
             indexedHtml.Tags,
             indexedHtml.Title,
             indexedHtml.Description)
-            .send({ from: ownerAddress, gas: 3000000 });
+            .send({ from: this._spiderConfig.OwnerAddress, gas: 3000000 });
     }
 }
 

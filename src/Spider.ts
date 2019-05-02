@@ -10,6 +10,6 @@ export default class Spider {
     }
 
     public Start(ipfsHash: string) {
-        return this.web3IndexerService.IndexIpfsHostedHtml(ipfsHash);
+        let indexed = this.web3IndexerService.IndexIpfsHostedHtml(ipfsHash);
     }
 }

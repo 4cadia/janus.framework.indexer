@@ -1,9 +1,16 @@
 {
     "compilerOptions": {
-        "experimentalDecorators": true,
+        "lib": [
+            "es2015.promise",
+            "dom"
+        ],
         "experimentalDecorators": true,
         "baseUrl": ".",
-        "paths": { "*": ["types/*"] },
+        "paths": {
+            "*": [
+                "types/*"
+            ]
+        },
         "target": "es5",
         "module": "commonjs",
         "declaration": true,
