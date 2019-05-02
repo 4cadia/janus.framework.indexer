@@ -1,12 +1,8 @@
 const ipfsClient = require('ipfs-http-client');
 const DOMParser = require('xmldom').DOMParser;
 import IndexedHtml from '../../Domain/Entity/IndexedHtml'
-import IndexerSmService from './IndexerSmService';
 import IndexResult from '../../Domain/Entity/IndexResult';
-import IWeb3IndexerService from '../Interface/IWeb3IndexerService';
-import SpiderConfig from '../../Domain/Entity/SpiderConfig';
-import { inject, injectable } from 'tsyringe';
-import IIndexerSmService from '../Interface/IIndexerSmService';
+import IIpfsService from '../Interface/IIpfsService';
 
 
 export function GetMetaTag(ipfsHtml, metaName): string {
@@ -22,14 +18,13 @@ export function GetTitleValue(ipfsHtml): string {
     let title = ipfsHtml.getElementsByTagName('title')[0];
     return title.textContent;
 }
-
-
-export default class Web3IndexerService implements IWeb3IndexerService {
+export default class IpfsService implements IIpfsService {
     _ipfsClient;
     constructor() {
         this._ipfsClient = new ipfsClient('localhost', '5001');
     }
-    public IndexIpfsHostedHtml(ipfsHash: string, callback: any) {
+
+    public GetIpfsHtml(ipfsHash: string, callback: any) {
         let indexed = new IndexedHtml();
         let result = new IndexResult();
         return this._ipfsClient.get(ipfsHash, (error, files) => {

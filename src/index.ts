@@ -1,12 +1,12 @@
 import "reflect-metadata";
 import { container } from "tsyringe";
 import Spider from './Spider';
-import Web3IndexerService from './Application/Service/Web3IndexerService';
+import IpfsService from './Application/Service/IpfsService';
 import SpiderConfig from './Domain/Entity/SpiderConfig';
 import IndexerSmService from "./Application/Service/IndexerSmService";
 
-container.register("IWeb3IndexerService", {
-    useClass: Web3IndexerService
+container.register("IpfsService", {
+    useClass: IpfsService
 });
 container.register("IIndexerSmService", {
     useClass: IndexerSmService

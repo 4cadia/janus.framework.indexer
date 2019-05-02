@@ -3,4 +3,5 @@ export default class IndexedHtml {
     public Tags: string[];
     public Title: string;
     public Description: string;
+    public HtmlContent: string;
 }

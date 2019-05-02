@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { injectable, inject, DependencyContainer } from "tsyringe";
-import IWeb3IndexerService from "../../Application/Interface/IWeb3IndexerService";
-import Web3IndexerService from "../../Application/Service/Web3IndexerService";
+import IWeb3IndexerService from "../../Application/Interface/IIpfsService";
+import Web3IndexerService from "../../Application/Service/IpfsService";
 import { container } from "tsyringe";
 
 export default class Bootstrapper {
