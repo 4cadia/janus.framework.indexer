@@ -63,27 +63,29 @@ const indexerSmAbi = [
         "signature": "0x17513855"
     }
 ];
-const web3 = new Web3("http://127.0.0.1:9545");
-const indexerSm = new web3.eth.Contract(this.indexerSmAbi, this.indexerSmAddress);
+
+// export function isValidAddress(address): boolean {
+//     let web3 = new Web3("http://127.0.0.1:9545");
+//     return web3.utils.isAddress(address);
+// }
 
 export default class IndexerSmService {
+    _ownerAddress: string;
+    _web3;
+    _indexerSm;
+
+    constructor(ownerAddress: string) {
+        this._ownerAddress = ownerAddress;
+        this._web3 = new Web3("http://127.0.0.1:9545");
+        this._indexerSm = new this._web3.eth.Contract(indexerSmAbi, indexerSmAddress);
+    }
+
     public IndexContent(indexedHtml: IndexedHtml, ownerAddress: string) {
-        let tags = ["tag"];
-        const transactionObject = {
-            from: ownerAddress,
-            gas: 3000000
-        };
-        indexerSm.methods.addWebSite('name', tags, 'title', 'desc', transactionObject, (error, result) => {
-
-            console.log("foi");
-        });
-
-
-        // indexerSm.methods.addWebSite.sendTransaction(indexedHtml.IpfsHash, tags, indexedHtml.Title, indexedHtml.Description)
-        //     .send({ from: ownerAddress, gas: 3000000 })
-        //     .then(function (result) {
-        //         console.log(result);
-        //     });
+        this._indexerSm.methods.addWebSite(indexedHtml.IpfsHash,
+            indexedHtml.Tags,
+            indexedHtml.Title,
+            indexedHtml.Description)
+            .send({ from: ownerAddress, gas: 3000000 });
     }
 }
 

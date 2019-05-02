@@ -1,13 +1,11 @@
-import Web3IndexerService from './Application/Service/Web3IndexerService'
-export default class Spider {
-    public IndexIpfsHostedHtml(ipfsHash: string) {
-        var service = new Web3IndexerService();
-        return service.IndexIpfsHostedHtml(ipfsHash, "123abc");
-    }
-}
-
-let spd = new Spider();
-let index = spd.IndexIpfsHostedHtml("QmTqhHXkqSAr4eEtfop37TNmanFMDdUL4W2h3muJHYMNVD");
-console.log(JSON.stringify(index));
+import "reflect-metadata";
+import { container } from "tsyringe";
+import Spider from './Spider';
+import Web3IndexerService from './Application/Service/Web3IndexerService';
+container.register("IWeb3IndexerService", {
+    useClass: Web3IndexerService
+});
+let spider = container.resolve(Spider);
+spider.Start("QmTqhHXkqSAr4eEtfop37TNmanFMDdUL4W2h3muJHYMNVD");
 
 
