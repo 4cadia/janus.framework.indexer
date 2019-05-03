@@ -6,19 +6,19 @@ export default class IpfsValidator extends AbstractValidator<IndexedHtml> implem
     constructor() {
         super();
         this.validateIf(html => html.HtmlContent)
-            .isUndefined()
+            .isNotEmpty()
             .withFailureMessage("Ipfs file not found");
 
         this.validateIf(html => html.Description)
-            .isEmpty()
+            .isNotEmpty()
             .withFailureMessage("Description can't be empty");
 
         this.validateIf(html => html.Tags)
-            .isNull()
+            .isNotNull()
             .withFailureMessage("Tags can't be empty");
 
         this.validateIf(html => html.Title)
-            .isEmpty()
+            .isNotEmpty()
             .withFailureMessage("Title can't be empty");
     }
 

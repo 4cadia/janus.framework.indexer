@@ -1,7 +1,7 @@
 const ipfsClient = require('ipfs-http-client');
 const DOMParser = require('xmldom').DOMParser;
 import IndexedHtml from '../../Domain/Entity/IndexedHtml'
-import IndexResult from '../../Domain/Entity/IndexResult';
+import IndexedHtmlResult from '../../Domain/Entity/IndexedHtmlResult';
 import IIpfsService from '../Interface/IIpfsService';
 import { injectable, inject } from 'tsyringe';
 import IIpfsValidator from '../Interface/IIpfsValidator';
@@ -29,18 +29,20 @@ export default class IpfsService implements IIpfsService {
 
     public GetIpfsHtml(ipfsHash: string, callback: any) {
         let indexed = new IndexedHtml();
-        let result = new IndexResult();
+        let result = new IndexedHtmlResult();
         return this._ipfsClient.get(ipfsHash, (error, files) => {
-            files.forEach((file) => {
-                indexed.HtmlContent = file.content.toString('utf8');
-                let htmlDoc = new DOMParser().parseFromString(indexed.HtmlContent, "text/xml");
-                indexed.Title = GetTitleValue(htmlDoc);
-                indexed.Tags = GetMetaTag(htmlDoc, "keywords").split(" ");
-                indexed.Description = GetMetaTag(htmlDoc, "description");
-                indexed.IpfsHash = ipfsHash;
-                result.IndexedContent = indexed;
-            });
-            var validationResult = this._ipfsValidator.ValidateHtmlFile(indexed);
+            if (files) {
+                files.forEach((file) => {
+                    indexed.HtmlContent = file.content.toString('utf8');
+                    let htmlDoc = new DOMParser().parseFromString(indexed.HtmlContent, "text/xml");
+                    indexed.Title = GetTitleValue(htmlDoc);
+                    indexed.Tags = GetMetaTag(htmlDoc, "keywords").split(" ");
+                    indexed.Description = GetMetaTag(htmlDoc, "description");
+                    indexed.IpfsHash = ipfsHash;
+                    result.IndexedHtmlResult = indexed;
+                });
+            }
+            let validationResult = this._ipfsValidator.ValidateHtmlFile(indexed);
             result.Success = validationResult.isValid();
             result.Errors = validationResult.getFailureMessages();
             callback(result);

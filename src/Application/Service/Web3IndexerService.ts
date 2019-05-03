@@ -2,7 +2,9 @@ const Web3 = require('web3');
 import IndexedHtml from '../../Domain/Entity/IndexedHtml';
 import { inject, injectable } from 'tsyringe';
 import SpiderConfig from '../../Domain/Entity/SpiderConfig';
-import IIndexerSmService from '../Interface/IIndexerSmService';
+import IWeb3IndexerService from '../Interface/IWeb3IndexerService';
+import IWeb3IndexerValidator from '../Interface/IWeb3IndexerValidator';
+import Web3IndexerValidator from '../Validator/Web3IndexerValidator';
 const indexerSmAddress = "0xf32287E571E4eF770AA7be1d6253E39A23805332";
 const indexerSmAbi = [
     {
@@ -67,21 +69,19 @@ const indexerSmAbi = [
     }
 ];
 
-// export function isValidAddress(address): boolean {
-//     let web3 = new Web3("http://127.0.0.1:9545");
-//     return web3.utils.isAddress(address);
-// }
-
 @injectable()
-export default class IndexerSmService implements IIndexerSmService {
+export default class Web3IndexerService implements IWeb3IndexerService {
     _web3;
     _indexerSm;
-    constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig) {
+    constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig,
+        @inject("IWeb3IndexerValidator") private _web3IndexerValidator: IWeb3IndexerValidator) {
         this._web3 = new Web3("http://127.0.0.1:9545");
         this._indexerSm = new this._web3.eth.Contract(indexerSmAbi, indexerSmAddress);
     }
 
-    public IndexContent(indexedHtml: IndexedHtml) {
+    public IndexHtml(indexedHtml: IndexedHtml) {
+        let validationResult = this._web3IndexerValidator.ValidateAddress(this._spiderConfig);
+
         this._indexerSm.methods.addWebSite(indexedHtml.IpfsHash,
             indexedHtml.Tags,
             indexedHtml.Title,
