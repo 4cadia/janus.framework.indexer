@@ -3,6 +3,8 @@ const DOMParser = require('xmldom').DOMParser;
 import IndexedHtml from '../../Domain/Entity/IndexedHtml'
 import IndexResult from '../../Domain/Entity/IndexResult';
 import IIpfsService from '../Interface/IIpfsService';
+import { injectable, inject } from 'tsyringe';
+import IIpfsValidator from '../Interface/IIpfsValidator';
 
 
 export function GetMetaTag(ipfsHtml, metaName): string {
@@ -18,9 +20,10 @@ export function GetTitleValue(ipfsHtml): string {
     let title = ipfsHtml.getElementsByTagName('title')[0];
     return title.textContent;
 }
+@injectable()
 export default class IpfsService implements IIpfsService {
     _ipfsClient;
-    constructor() {
+    constructor(@inject("IIpfsValidator") private _ipfsValidator: IIpfsValidator) {
         this._ipfsClient = new ipfsClient('localhost', '5001');
     }
 
@@ -28,25 +31,18 @@ export default class IpfsService implements IIpfsService {
         let indexed = new IndexedHtml();
         let result = new IndexResult();
         return this._ipfsClient.get(ipfsHash, (error, files) => {
-            // result.Success = !error;
-            // if (!result.Success) {
-            //     result.Message = error.message;
-            //     return result;
-            // }
-
             files.forEach((file) => {
-
-                let html = file.content.toString('utf8');
-                let htmlDoc = new DOMParser().parseFromString(html, "text/xml");
-                let title = GetTitleValue(htmlDoc);
-                let tags = GetMetaTag(htmlDoc, "keywords");
-                let description = GetMetaTag(htmlDoc, "description");
+                indexed.HtmlContent = file.content.toString('utf8');
+                let htmlDoc = new DOMParser().parseFromString(indexed.HtmlContent, "text/xml");
+                indexed.Title = GetTitleValue(htmlDoc);
+                indexed.Tags = GetMetaTag(htmlDoc, "keywords").split(" ");
+                indexed.Description = GetMetaTag(htmlDoc, "description");
                 indexed.IpfsHash = ipfsHash;
-                indexed.Title = title;
-                indexed.Tags = tags.split(" ");
-                indexed.Description = description;
                 result.IndexedContent = indexed;
             });
+            var validationResult = this._ipfsValidator.ValidateHtmlFile(indexed);
+            result.Success = validationResult.isValid();
+            result.Errors = validationResult.getFailureMessages();
             callback(result);
         });
     }

@@ -76,8 +76,7 @@ const indexerSmAbi = [
 export default class IndexerSmService implements IIndexerSmService {
     _web3;
     _indexerSm;
-    constructor(@inject("SpiderConfig")
-    private _spiderConfig: SpiderConfig) {
+    constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig) {
         this._web3 = new Web3("http://127.0.0.1:9545");
         this._indexerSm = new this._web3.eth.Contract(indexerSmAbi, indexerSmAddress);
     }

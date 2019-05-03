@@ -4,6 +4,7 @@ import Spider from './Spider';
 import IpfsService from './Application/Service/IpfsService';
 import SpiderConfig from './Domain/Entity/SpiderConfig';
 import IndexerSmService from "./Application/Service/IndexerSmService";
+import IpfsValidator from "./Application/Validator/IpfsValidator";
 
 container.register("IpfsService", {
     useClass: IpfsService
@@ -13,6 +14,9 @@ container.register("IIndexerSmService", {
 });
 container.register("SpiderConfig", {
     useClass: SpiderConfig
+});
+container.register("IIpfsValidator", {
+    useClass: IpfsValidator
 });
 let spider = container.resolve(Spider);
 spider.Start("QmTqhHXkqSAr4eEtfop37TNmanFMDdUL4W2h3muJHYMNVD");
