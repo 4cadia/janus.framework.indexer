@@ -1,10 +1,11 @@
 const Web3 = require('web3');
-import IndexedHtml from '../../Domain/Entity/IndexedHtml';
+import HtmlData from '../../Domain/Entity/HtmlData';
 import { inject, injectable } from 'tsyringe';
 import SpiderConfig from '../../Domain/Entity/SpiderConfig';
 import IWeb3IndexerService from '../Interface/IWeb3IndexerService';
 import IWeb3IndexerValidator from '../Interface/IWeb3IndexerValidator';
 import Web3IndexerValidator from '../Validator/Web3IndexerValidator';
+import IndexedHtmlResult from '../../Domain/Entity/IndexedHtmlResult';
 const indexerSmAddress = "0xf32287E571E4eF770AA7be1d6253E39A23805332";
 const indexerSmAbi = [
     {
@@ -71,22 +72,27 @@ const indexerSmAbi = [
 
 @injectable()
 export default class Web3IndexerService implements IWeb3IndexerService {
-    _web3;
-    _indexerSm;
+    private _web3;
+    private _indexerSm;
     constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig,
         @inject("IWeb3IndexerValidator") private _web3IndexerValidator: IWeb3IndexerValidator) {
         this._web3 = new Web3("http://127.0.0.1:9545");
         this._indexerSm = new this._web3.eth.Contract(indexerSmAbi, indexerSmAddress);
     }
 
-    public IndexHtml(indexedHtml: IndexedHtml) {
+    public IndexHtml(htmlData: HtmlData): IndexedHtmlResult {
         let validationResult = this._web3IndexerValidator.ValidateAddress(this._spiderConfig);
-
-        this._indexerSm.methods.addWebSite(indexedHtml.IpfsHash,
-            indexedHtml.Tags,
-            indexedHtml.Title,
-            indexedHtml.Description)
-            .send({ from: this._spiderConfig.OwnerAddress, gas: 3000000 });
+        let result = new IndexedHtmlResult();
+        result.Success = validationResult.isValid();
+        result.Errors = validationResult.getFailureMessages();
+        result.HtmlData = htmlData;
+        if (result.Success)
+            this._indexerSm.methods.addWebSite(htmlData.IpfsHash,
+                htmlData.Tags,
+                htmlData.Title,
+                htmlData.Description)
+                .send({ from: this._spiderConfig.OwnerAddress, gas: 3000000 });
+        return result;
     }
 }
 

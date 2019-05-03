@@ -1,11 +1,10 @@
 const ipfsClient = require('ipfs-http-client');
 const DOMParser = require('xmldom').DOMParser;
-import IndexedHtml from '../../Domain/Entity/IndexedHtml'
+import HtmlData from '../../Domain/Entity/HtmlData'
 import IndexedHtmlResult from '../../Domain/Entity/IndexedHtmlResult';
 import IIpfsService from '../Interface/IIpfsService';
 import { injectable, inject } from 'tsyringe';
 import IIpfsValidator from '../Interface/IIpfsValidator';
-
 
 export function GetMetaTag(ipfsHtml, metaName): string {
     let metas = ipfsHtml.getElementsByTagName('meta');
@@ -28,21 +27,21 @@ export default class IpfsService implements IIpfsService {
     }
 
     public GetIpfsHtml(ipfsHash: string, callback: any) {
-        let indexed = new IndexedHtml();
+        let htmlData = new HtmlData();
         let result = new IndexedHtmlResult();
         return this._ipfsClient.get(ipfsHash, (error, files) => {
             if (files) {
                 files.forEach((file) => {
-                    indexed.HtmlContent = file.content.toString('utf8');
-                    let htmlDoc = new DOMParser().parseFromString(indexed.HtmlContent, "text/xml");
-                    indexed.Title = GetTitleValue(htmlDoc);
-                    indexed.Tags = GetMetaTag(htmlDoc, "keywords").split(" ");
-                    indexed.Description = GetMetaTag(htmlDoc, "description");
-                    indexed.IpfsHash = ipfsHash;
-                    result.IndexedHtmlResult = indexed;
+                    htmlData.HtmlContent = file.content.toString('utf8');
+                    let htmlDoc = new DOMParser().parseFromString(htmlData.HtmlContent, "text/xml");
+                    htmlData.Title = GetTitleValue(htmlDoc);
+                    htmlData.Tags = GetMetaTag(htmlDoc, "keywords").split(" ");
+                    htmlData.Description = GetMetaTag(htmlDoc, "description");
+                    htmlData.IpfsHash = ipfsHash;
+                    result.HtmlData = htmlData;
                 });
             }
-            let validationResult = this._ipfsValidator.ValidateHtmlFile(indexed);
+            let validationResult = this._ipfsValidator.ValidateHtmlData(htmlData);
             result.Success = validationResult.isValid();
             result.Errors = validationResult.getFailureMessages();
             callback(result);

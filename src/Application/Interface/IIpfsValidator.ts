@@ -1,4 +1,4 @@
-import IndexedHtml from '../../Domain/Entity/IndexedHtml';
+import HtmlData from '../../Domain/Entity/HtmlData';
 export default interface IIpfsValidator {
-    ValidateHtmlFile(ipfsHtml: IndexedHtml);
+    ValidateHtmlData(ipfsHtml: HtmlData);
 }

@@ -10,7 +10,8 @@ export default class SpiderService implements ISpiderService {
     }
     AddContent(ipfsHash: string) {
         this._ipfsService.GetIpfsHtml(ipfsHash, (result) => {
-            this._web3IndexerService.IndexHtml(result.IndexedContent);
+            if (result.Success)
+                this._web3IndexerService.IndexHtml(result.IndexedContent);
         });
     }
 }

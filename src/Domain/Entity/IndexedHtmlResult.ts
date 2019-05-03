@@ -1,6 +1,6 @@
-import IndexedHtml from "./IndexedHtml";
+import HtmlData from "./HtmlData";
 export default class IndexedHtmlResult {
-    public IndexedHtmlResult: IndexedHtml;
+    public HtmlData: HtmlData;
     public Success: boolean;
     public Errors: string[];
 }

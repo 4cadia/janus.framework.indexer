@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { container } from "tsyringe";
-import Spider from './Spider';
 import IpfsService from './Application/Service/IpfsService';
 import SpiderConfig from './Domain/Entity/SpiderConfig';
 import Web3IndexerService from "./Application/Service/Web3IndexerService";

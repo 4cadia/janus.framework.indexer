@@ -1,8 +1,8 @@
-import IndexedHtml from "../../Domain/Entity/IndexedHtml";
+import HtmlData from "../../Domain/Entity/HtmlData";
 import { AbstractValidator } from 'fluent-ts-validator';
 import IIpfsValidator from "../Interface/IIpfsValidator";
 
-export default class IpfsValidator extends AbstractValidator<IndexedHtml> implements IIpfsValidator {
+export default class IpfsValidator extends AbstractValidator<HtmlData> implements IIpfsValidator {
     constructor() {
         super();
         this.validateIf(html => html.HtmlContent)
@@ -22,7 +22,7 @@ export default class IpfsValidator extends AbstractValidator<IndexedHtml> implem
             .withFailureMessage("Title can't be empty");
     }
 
-    public ValidateHtmlFile(ipfsHtml: IndexedHtml) {
+    public ValidateHtmlData(ipfsHtml: HtmlData) {
         return this.validate(ipfsHtml);
     }
 }

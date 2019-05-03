@@ -1,4 +1,5 @@
-import IndexedHtml from "../../Domain/Entity/IndexedHtml";
+import HtmlData from "../../Domain/Entity/HtmlData";
+import IndexedHtmlResult from "../../Domain/Entity/IndexedHtmlResult";
 export default interface IWeb3IndexerService {
-    IndexHtml(indexedHtml: IndexedHtml);
+    IndexHtml(htmlData: HtmlData): IndexedHtmlResult
 }
