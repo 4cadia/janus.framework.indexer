@@ -1,17 +1,17 @@
 {
-  "name": "spdpckt",
-  "version": "1.0.6",
+  "name": "janusidx",
+  "version": "1.0.0",
   "description": "teste",
   "main": "dist/index.js",
   "bin": {
-    "janus": "dist/index.js"
+    "janusidx": "dist/index.js"
   },
   "types": "dist/index.d.ts",
   "scripts": {
-    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
-    "create": "npm run build && npm run test",
+    "start": "nodemon src/index.ts",
+    "create": "npm run build;janusidx",
     "build": "tsc -p .",
-    "test": "sudo npm i -g && pizza",
+    "test": "sudo npm i -g && janusidx",
     "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
   },
   "author": "",

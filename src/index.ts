@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const clear = require("clear");
 const figlet = require("figlet");
-import chalk from "chalk";
+const chalk = require("chalk");
 import path from "path";
 
 import "reflect-metadata";
@@ -31,19 +31,20 @@ container.register("IWeb3IndexerValidator", {
 container.register("ISpiderService", {
     useClass: SpiderService
 });
-// var program = require("commander");
-// clear();
-// console.log(chalk.red(figlet.textSync('Janus-cli', { horizontalLayout: 'full' })));
-// program
-//     .version('1.0.0')
-//     .description("Janus CLI - Web3 Indexer")
-//     .option('-C, --content', 'Content to be indexed')
-//     .option('-A, --address', 'IPFS Address')
-//     .parse(process.argv);
+clear();
+const program = require("commander");
+console.log(chalk.red(figlet.textSync('Janus-cli', { horizontalLayout: 'full' })));
+program
+    .version('1.0.0')
+    .description("Janus CLI - Web3 Indexer")
+    .option('-I, --ipfs <item>', 'Ipfs Hash of the item to be indexed')
+    .option('-A, --address <item>', 'Your ETH adress')
+    .action(args => {
+        let spider = container.resolve(SpiderService);
+        spider.AddContent(args.ipfs);
+    })
+    .parse(process.argv);
+console.log(program.helpInformation());
 
-//     if (program.args.length === 0) program.help();
 
-let spider = container.resolve(SpiderService);
-spider.AddContent("QmTqhHXkqSAr4eEtfop37TNmanFMDdUL4W2h3muJHYMNVD");
-console.log("feito");
 
