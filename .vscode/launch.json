@@ -6,8 +6,8 @@
     "configurations": [
         {
             "args": [
-                "--ipfs=abc",
-                "--address=0x0f0b73171eb91c502e10c93306c2b84596363f30"
+                "--ipfs=QmPDs4wSRNFMZA5ECBr4WqrrjJjE9PjZ9G1ZFzChAJ45LH",
+                "--address=abc"
             ],
             "type": "node",
             "request": "launch",
