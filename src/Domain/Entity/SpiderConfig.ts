@@ -1,7 +1,7 @@
-import { singleton } from "tsyringe";
+import { singleton, injectable } from "tsyringe";
 @singleton()
+@injectable()
 export default class SpiderConfig {
-    public OwnerAddress: string = "0x0f0b73171eb91c502e10c93306c2b84596363f30";
     public indexerSmAddress = "0xf32287E571E4eF770AA7be1d6253E39A23805332";
     public indexerSmAbi = [
         {

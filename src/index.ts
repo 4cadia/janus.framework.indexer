@@ -7,12 +7,16 @@ import path from "path";
 import "reflect-metadata";
 import { container } from "tsyringe";
 import IpfsService from './Application/Service/IpfsService';
-import SpiderConfig from './Domain/Entity/SpiderConfig';
 import Web3IndexerService from "./Application/Service/Web3IndexerService";
 import IpfsValidator from "./Application/Validator/IpfsValidator";
 import Web3IndexerValidator from "./Application/Validator/Web3IndexerValidator";
 import SpiderService from "./Application/Service/SpiderService";
+import SpiderConfig from "./Domain/Entity/SpiderConfig";
+import LogService from "./Application/Service/LogService";
 
+container.register("ILogService", {
+    useClass: LogService
+});
 container.register("IpfsService", {
     useClass: IpfsService
 });
@@ -41,10 +45,6 @@ program
     .option('-A, --address <item>', 'Your ETH adress')
     .action(args => {
         let spider = container.resolve(SpiderService);
-        spider.AddContent(args.ipfs);
-    })
-    .parse(process.argv);
+        spider.AddContent(args.ipfs, args.address);
+    }).parse(process.argv);
 console.log(program.helpInformation());
-
-
-

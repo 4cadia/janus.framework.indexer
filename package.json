@@ -1,6 +1,6 @@
 {
   "name": "janusidx",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "teste",
   "main": "dist/index.js",
   "bin": {

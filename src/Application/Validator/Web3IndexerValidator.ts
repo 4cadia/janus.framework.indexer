@@ -10,13 +10,13 @@ export default class Web3IndexerValidator extends AbstractValidator<SpiderConfig
     constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig) {
         super();
     }
-    ValidateIndexRequestAsync(htmlData: HtmlData, callback: any) {
+    ValidateIndexRequestAsync(htmlData: HtmlData, ownerAddress: string, callback: any) {
         let web3 = new Web3("http://127.0.0.1:9545");
         let indexerSm = new web3.eth.Contract(this._spiderConfig.indexerSmAbi, this._spiderConfig.indexerSmAddress);
         indexerSm.methods.webSiteExists(htmlData.IpfsHash)
-            .call({ from: this._spiderConfig.OwnerAddress, gas: 3000000 })
+            .call({ from: ownerAddress, gas: 3000000 })
             .then(exists => {
-                this.validateIf(s => s.OwnerAddress)
+                this.validateIf(s => ownerAddress)
                     .fulfills(adress => web3.utils.isAddress(adress))
                     .withFailureMessage("Invalid Ethereum Address");
 
@@ -24,7 +24,6 @@ export default class Web3IndexerValidator extends AbstractValidator<SpiderConfig
                     .isEqualTo(false)
                     .withFailureMessage("Ipfs hash already indexed");
 
-                console.log(exists);
                 callback(this.validate(this._spiderConfig));
             });
     }
