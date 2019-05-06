@@ -16,6 +16,8 @@ export default class SpiderService implements ISpiderService {
             if (result.Success)
                 this._web3IndexerService.IndexHtml(result.HtmlData, ownerAddress, indexResult => {
                     this._logService.LogStep("Index Web3 file", indexResult);
+                    if (indexResult.Success)
+                        this._logService.LogResult(indexResult.HtmlData);
                 });
         });
     }
