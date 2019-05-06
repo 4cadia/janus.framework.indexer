@@ -17,7 +17,7 @@ export default class Web3IndexerValidator extends AbstractValidator<SpiderConfig
             .call({ from: ownerAddress, gas: 3000000 })
             .then(exists => {
                 this.validateIf(s => ownerAddress)
-                    .fulfills(adress => web3.utils.isAddress(adress))
+                    .fulfills(address => web3.utils.isAddress(address))
                     .withFailureMessage("Invalid Ethereum Address");
 
                 this.validateIf(s => exists)
