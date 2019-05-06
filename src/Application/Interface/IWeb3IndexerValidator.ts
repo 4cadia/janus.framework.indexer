@@ -1,4 +1,5 @@
-import SpiderConfig from '../../Domain/Entity/SpiderConfig';
+import HtmlData from "../../Domain/Entity/HtmlData";
+
 export default interface IWeb3IndexerValidator {
-    ValidateAddress(spiderConfig: SpiderConfig);
+    ValidateIndexRequestAsync(htmlData: HtmlData, callback: any);
 }
