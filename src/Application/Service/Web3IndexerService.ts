@@ -15,7 +15,6 @@ export default class Web3IndexerService implements IWeb3IndexerService {
         this._web3 = new Web3("http://127.0.0.1:9545");
         this._indexerSm = new this._web3.eth.Contract(_spiderConfig.indexerSmAbi, _spiderConfig.indexerSmAddress);
     }
-
     public IndexHtml(htmlData: HtmlData, ownerAddress: string, callback: any) {
         this._web3IndexerValidator.ValidateIndexRequestAsync(htmlData, ownerAddress, validation => {
             let result = new IndexedHtmlResult();

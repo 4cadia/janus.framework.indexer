@@ -12,13 +12,16 @@
                 "types/*"
             ]
         },
+        "rootDirs": [
+            "src",
+            "test"
+        ],
         "target": "es6",
         "module": "commonjs",
         "declaration": true,
         "outDir": "./dist",
         "strict": false,
         "sourceMap": true,
-        "rootDir": "src",
         "types": [
             "node"
         ],

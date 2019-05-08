@@ -7,7 +7,7 @@
         {
             "args": [
                 "--ipfs=QmfGoa2WXVm8mGHWufisEnbJXJAAmx4UeTygpQZXLAJZZd",
-                "--address=0x0f0b73171eb91c502e10c93306c2b84596363f30"
+                "--address='123'"
             ],
             "type": "node",
             "request": "launch",

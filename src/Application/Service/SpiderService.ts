@@ -6,7 +6,7 @@ import ILogService from '../../Application/Interface/ILogService';
 
 @injectable()
 export default class SpiderService implements ISpiderService {
-    constructor(@inject("IpfsService") private _ipfsService: IIpfsService,
+    constructor(@inject("IIpfsService") private _ipfsService: IIpfsService,
         @inject("IWeb3IndexerService") private _web3IndexerService: IWeb3IndexerService,
         @inject("ILogService") private _logService: ILogService) {
     }

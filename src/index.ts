@@ -17,7 +17,7 @@ import LogService from "./Application/Service/LogService";
 container.register("ILogService", {
     useClass: LogService
 });
-container.register("IpfsService", {
+container.register("IIpfsService", {
     useClass: IpfsService
 });
 container.register("IWeb3IndexerService", {
@@ -48,3 +48,4 @@ program
         spider.AddContent(args.ipfs, args.address);
     }).parse(process.argv);
 console.log(program.helpInformation());
+export { container as container };

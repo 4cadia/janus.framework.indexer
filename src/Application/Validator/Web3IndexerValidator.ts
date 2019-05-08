@@ -15,7 +15,7 @@ export default class Web3IndexerValidator extends AbstractValidator<SpiderConfig
     ValidateIndexRequestAsync(htmlData: HtmlData, ownerAddress: string, callback: any) {
         this.ValidateAddress(ownerAddress, addressValidation => {
             if (!addressValidation.isValid())
-                callback(addressValidation);
+                return callback(addressValidation);
 
             let indexerSm = new this._web3.eth.Contract(this._spiderConfig.indexerSmAbi, this._spiderConfig.indexerSmAddress);
             indexerSm.methods.webSiteExists(htmlData.IpfsHash)

@@ -25,11 +25,10 @@ export default class IpfsService implements IIpfsService {
     constructor(@inject("IIpfsValidator") private _ipfsValidator: IIpfsValidator) {
         this._ipfsClient = new ipfsClient('localhost', '5001');
     }
-
     public GetIpfsHtml(ipfsHash: string, callback: any) {
-        let htmlData = new HtmlData();
-        let result = new IndexedHtmlResult();
-        return this._ipfsClient.get(ipfsHash, (error, files) => {
+        return this.GetIpfsFile(ipfsHash, (error, files) => {
+            let htmlData = new HtmlData();
+            let result = new IndexedHtmlResult();
             if (files) {
                 files.forEach((file) => {
                     htmlData.HtmlContent = file.content.toString('utf8');
@@ -47,7 +46,10 @@ export default class IpfsService implements IIpfsService {
             callback(result);
         });
     }
-
-
+    public GetIpfsFile(ipfsHash: string, callback: any) {
+        return this._ipfsClient.get(ipfsHash, (error, files) => {
+            callback(error, files);
+        });
+    }
 }
 
