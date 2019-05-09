@@ -1,4 +1,8 @@
 {
+    "exclude": [
+        "node_modules",
+        "test"
+    ],
     "compilerOptions": {
         "lib": [
             "es6",
@@ -12,10 +16,7 @@
                 "types/*"
             ]
         },
-        "rootDirs": [
-            "src",
-            "test"
-        ],
+        "rootDir": "src",
         "target": "es6",
         "module": "commonjs",
         "declaration": true,
