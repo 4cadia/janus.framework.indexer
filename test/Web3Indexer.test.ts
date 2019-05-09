@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { container } from '../src/index';
 import Web3IndexerValidator from '../src/Application/Validator/Web3IndexerValidator';
 import Web3IndexerService from '../src/Application/Service/Web3IndexerService';
-import SpiderConfig from './Domain/Entity/SpiderConfig';
+import SpiderConfig from '../src/Domain/Entity/SpiderConfig';
 import IWeb3IndexerValidator from '../src/Application/Interface/IWeb3IndexerValidator';
 import HtmlData from '../src/Domain/Entity/HtmlData';
 

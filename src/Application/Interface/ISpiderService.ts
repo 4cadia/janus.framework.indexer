@@ -1,3 +1,4 @@
 export default interface ISpiderService {
-    AddContent(ipfsHash: string, ownerAddress: string);
+    AddContent(contentPath: string, ownerAddress: string);
+    AddContentByHash(ipfsHash: string, ownerAddress: string);
 }

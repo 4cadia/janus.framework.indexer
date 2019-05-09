@@ -45,7 +45,7 @@ program
     .option('-A, --address <item>', 'Your ETH adress')
     .action(args => {
         let spider = container.resolve(SpiderService);
-        spider.AddContent(args.ipfs, args.address);
+        spider.AddContent("C:\\Users\\Victor Hugo Ramos\\Downloads\\Ipfs\\lua.html", args.address);
     }).parse(process.argv);
 console.log(program.helpInformation());
 export { container as container };
