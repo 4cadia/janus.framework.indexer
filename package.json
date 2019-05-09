@@ -12,7 +12,8 @@
     "create": "npm run build;janusidx",
     "build": "tsc -p .",
     "test": "jest",
-    "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
+    "refresh": "rm -rf ./node_modules ./package-lock.json && npm install",
+    "coverage": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
