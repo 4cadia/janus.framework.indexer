@@ -6,9 +6,6 @@ import path from "path";
 import Bootstrapper from '../src/Infra/IoC/Bootstrapper';
 
 test.skip('skip', () => { })
-// beforeEach(() => {
-//     Bootstrapper.RegisterServices();
-// });
 jest.mock('../src/Application/Service/IpfsService');
 describe("Index Validator Test", () => {
     Bootstrapper.RegisterServices();
