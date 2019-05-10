@@ -2,7 +2,6 @@
 const clear = require("clear");
 const figlet = require("figlet");
 const chalk = require("chalk");
-import path from "path";
 import Bootstrapper from './Infra/IoC/Bootstrapper';
 import ISpiderService from "./Application/Interface/ISpiderService";
 clear();

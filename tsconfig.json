@@ -1,8 +1,4 @@
 {
-    "include": [
-        "src/**/*.ts",
-        "test/**/*.ts"
-    ],
     "compilerOptions": {
         "lib": [
             "es6",
