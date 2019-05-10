@@ -3,7 +3,6 @@ const clear = require("clear");
 const figlet = require("figlet");
 const chalk = require("chalk");
 import path from "path";
-
 import "reflect-metadata";
 import { container } from "tsyringe";
 import IpfsService from './Application/Service/IpfsService';

@@ -1,8 +1,9 @@
 import 'jest';
 import "reflect-metadata";
 import IpfsService from '../src/Application/Service/IpfsService';
-import { container } from '../src/index';
-import template from "./templates/Template.json";
+import { container } from "../src/index";
+import fs from "fs";
+import path from "path";
 
 test.skip('skip', () => { })
 jest.mock('../src/Application/Service/IpfsService');
@@ -32,7 +33,7 @@ describe("Index Validator Test", () => {
 });
 
 describe("Content Test", () => {
-    let htmlTemplate: any = template.html;
+    let htmlTemplate = fs.readFileSync(path.resolve(__dirname, "./templates/Template.html"), "utf8");
     let getIpfsMock = jest.fn((ipfsHash: string, callback: any) => {
         let file = [{
             content: htmlTemplate
@@ -42,14 +43,15 @@ describe("Content Test", () => {
     let ipfsService = new IpfsService(container.resolve("IIpfsValidator"));
     ipfsService.GetIpfsFile = getIpfsMock;
     ipfsService.GetIpfsHtml(null, indexedResult => {
+        console.log(indexedResult);
         it("Tag extraction", () => {
-            expect(indexedResult.HtmlData.Tags.join()).toBe(template.tags.join());
+            expect(indexedResult.HtmlData.Tags.join()).toBe("test1 test2");
         });
         it("Title extraction", () => {
-            expect(indexedResult.HtmlData.Title).toBe(template.title);
+            expect(indexedResult.HtmlData.Title).toBe("Test Title");
         });
         it("Description extraction", () => {
-            expect(indexedResult.HtmlData.Description).toBe(template.description);
+            expect(indexedResult.HtmlData.Description).toBe("Test Description");
         });
         it("Success is true", () => {
             expect(indexedResult.Success).toBeTruthy();
