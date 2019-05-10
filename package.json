@@ -10,10 +10,11 @@
   "scripts": {
     "start": "nodemon src/index.ts",
     "create": "npm run build;janusidx",
-    "build": "tsc -p .",
+    "build": "tsc -p . && npm run html",
     "test": "jest",
     "refresh": "rm -rf ./node_modules ./package-lock.json && npm install",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "html": "copyfiles test/**/*.html dist/"
   },
   "author": "",
   "license": "ISC",
@@ -36,6 +37,7 @@
     "@types/jest": "^24.0.12",
     "@types/mocha": "^5.2.6",
     "@types/node": "^11.13.9",
+    "copyfiles": "^2.1.0",
     "jest": "^24.8.0",
     "mocha": "^6.1.4",
     "nodemon": "^1.19.0",

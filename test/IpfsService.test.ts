@@ -45,7 +45,7 @@ describe("Content Test", () => {
     ipfsService.GetIpfsHtml(null, indexedResult => {
         console.log(indexedResult);
         it("Tag extraction", () => {
-            expect(indexedResult.HtmlData.Tags.join()).toBe("test1 test2");
+            expect(indexedResult.HtmlData.Tags.join()).toBe("test1,test2");
         });
         it("Title extraction", () => {
             expect(indexedResult.HtmlData.Title).toBe("Test Title");
