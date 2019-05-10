@@ -1,17 +1,21 @@
 import 'jest';
 import "reflect-metadata";
 import IpfsService from '../src/Application/Service/IpfsService';
-import { container } from "../src/index";
 import fs from "fs";
 import path from "path";
+import Bootstrapper from '../src/Infra/IoC/Bootstrapper';
 
 test.skip('skip', () => { })
+// beforeEach(() => {
+//     Bootstrapper.RegisterServices();
+// });
 jest.mock('../src/Application/Service/IpfsService');
 describe("Index Validator Test", () => {
+    Bootstrapper.RegisterServices();
     let getIpfsMock = jest.fn((ipfsHash: string, callback: any) => {
         callback(null, null);
     });
-    let ipfsService = new IpfsService(container.resolve("IIpfsValidator"));
+    let ipfsService = new IpfsService(Bootstrapper.Resolve("IIpfsValidator"));
     ipfsService.GetIpfsFile = getIpfsMock;
     ipfsService.GetIpfsHtml(null, indexResult => {
         it("Invalid File returns success equals false", () => {
@@ -40,7 +44,7 @@ describe("Content Test", () => {
         }];
         callback(null, file);
     });
-    let ipfsService = new IpfsService(container.resolve("IIpfsValidator"));
+    let ipfsService = new IpfsService(Bootstrapper.Resolve("IIpfsValidator"));
     ipfsService.GetIpfsFile = getIpfsMock;
     ipfsService.GetIpfsHtml(null, indexedResult => {
         console.log(indexedResult);

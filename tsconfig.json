@@ -1,9 +1,12 @@
 {
     "exclude": [
         "test",
-        "dist"
+        "dist",
+        "coverage",
+        "node_modules"
     ],
     "compilerOptions": {
+        "rootDir": "src",
         "lib": [
             "es6",
             "es2015",
@@ -16,7 +19,6 @@
                 "types/*"
             ]
         },
-        "rootDir": "src",
         "target": "es6",
         "module": "commonjs",
         "declaration": true,

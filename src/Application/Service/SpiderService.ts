@@ -8,7 +8,7 @@ import fs from "fs";
 @injectable()
 export default class SpiderService implements ISpiderService {
     AddContent(contentPath: string, ownerAddress: string) {
-        // console.log(fs.readFileSync(contentPath, "utf8"));
+        console.log(fs.readFileSync(contentPath, "utf8"));
     }
     constructor(@inject("IIpfsService") private _ipfsService: IIpfsService,
         @inject("IWeb3IndexerService") private _web3IndexerService: IWeb3IndexerService,
