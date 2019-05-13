@@ -1,4 +1,4 @@
+import IndexRequest from '../../Domain/Entity/IndexRequest';
 export default interface ISpiderService {
-    AddContent(filePath: string, ownerAddress: string);
-    AddContentByHash(ipfsHash: string, ownerAddress: string, callback: any);
+    AddContent(IndexRequest: IndexRequest, ownerAddress: string, callback: any);
 }

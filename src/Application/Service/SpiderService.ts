@@ -2,10 +2,12 @@ const DOMParser = require('xmldom').DOMParser;
 import { injectable, inject } from "tsyringe";
 import IIpfsService from "../Interface/IIpfsService";
 import IWeb3IndexerService from "../Interface/IWeb3IndexerService";
-import ISpiderService from "../Interface/ISpiderService";
 import HtmlData from "../../Domain/Entity/HtmlData";
 import IndexedHtmlResult from "../../Domain/Entity/IndexedHtmlResult";
 import ISpiderValidator from "../Interface/ISpiderValidator";
+import IndexRequest from "../../Domain/Entity/IndexRequest";
+import ISpiderService from "../Interface/ISpiderService";
+import { ContentType } from "../../Domain/Entity/ContentType";
 
 @injectable()
 export default class SpiderService implements ISpiderService {
@@ -13,23 +15,26 @@ export default class SpiderService implements ISpiderService {
         @inject("IWeb3IndexerService") private _web3IndexerService: IWeb3IndexerService,
         @inject("ISpiderValidator") private _spiderValidator: ISpiderValidator) {
     }
-    AddContent(filePath: string, ownerAddress: string) {
-        this._ipfsService.AddIpfsFile(filePath, ipfsHash => {
-            this.AddContentByHash(ipfsHash, ownerAddress, result => {
-                console.log(result);
-            });
-        });
-    }
-    AddContentByHash(ipfsHash: string, ownerAddress: string, callback: any) {
-        this._ipfsService.GetIpfsFile(ipfsHash, (error, file) => {
-            let htmlDataResult = this.GetHtmlData(file.content.toString("utf8"), ipfsHash);
+    AddContent(IndexRequest: IndexRequest, ownerAddress: string, callback: any) {
+        this.GetContent(IndexRequest, ownerAddress, (ipfsHash, fileText) => {
+            let htmlDataResult = this.GetHtmlData(fileText, ipfsHash);
             if (!htmlDataResult.Success)
                 return callback(htmlDataResult);
 
             this._web3IndexerService.IndexHtml(htmlDataResult.HtmlData, ownerAddress, indexResult => {
-                return callback(indexResult);
+                callback(indexResult);
             });
         });
+    }
+    GetContent(IndexRequest: IndexRequest, ownerAddress: string, callback: any) {
+        if (IndexRequest.ContentType == ContentType.FilePath)
+            this._ipfsService.AddIpfsFile(IndexRequest.Content, (ipfsHash, fileText) => {
+                callback(ipfsHash, fileText);
+            });
+        else
+            this._ipfsService.GetIpfsFile(IndexRequest.Content, (error, file) => {
+                callback(IndexRequest.Content, file.content.toString("utf8"));
+            });
     }
     private GetHtmlData(rawHtml: string, ipfsHash: string): IndexedHtmlResult {
         let htmlData = new HtmlData();

@@ -21,7 +21,7 @@ export default class IpfsService implements IIpfsService {
             }
         ];
         return this._ipfsClient.add(file, (err, response) => {
-            return callback(response[0].hash);
+            return callback(response[0].hash, fileText);
         });
     }
     public GetIpfsFile(ipfsHash: string, callback: any) {
