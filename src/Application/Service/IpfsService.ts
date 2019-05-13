@@ -1,9 +1,6 @@
 const ipfsClient = require('ipfs-http-client');
-import HtmlData from '../../Domain/Entity/HtmlData'
-import IndexedHtmlResult from '../../Domain/Entity/IndexedHtmlResult';
 import IIpfsService from '../Interface/IIpfsService';
-import { injectable, inject } from 'tsyringe';
-import IIpfsValidator from '../Interface/ISpiderValidator';
+import { injectable } from 'tsyringe';
 import fs from "fs";
 
 @injectable()
