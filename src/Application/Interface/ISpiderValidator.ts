@@ -1,4 +1,4 @@
 import HtmlData from '../../Domain/Entity/HtmlData';
-export default interface IIpfsValidator {
+export default interface ISpiderValidator {
     ValidateHtmlData(ipfsHtml: HtmlData);
 }
