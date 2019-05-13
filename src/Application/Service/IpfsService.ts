@@ -5,6 +5,7 @@ import IndexedHtmlResult from '../../Domain/Entity/IndexedHtmlResult';
 import IIpfsService from '../Interface/IIpfsService';
 import { injectable, inject } from 'tsyringe';
 import IIpfsValidator from '../Interface/IIpfsValidator';
+import fs from "fs";
 
 export function GetMetaTag(ipfsHtml, metaName): string {
     let metas = ipfsHtml.getElementsByTagName('meta');
@@ -44,6 +45,18 @@ export default class IpfsService implements IIpfsService {
             result.Success = validationResult.isValid();
             result.Errors = validationResult.getFailureMessages();
             callback(result);
+        });
+    }
+    public AddIpfsFile(filePath: string, callback: any) {
+        let fileText = fs.readFileSync(filePath, "utf8");
+        let file = [
+            {
+                path: filePath,
+                content: new Buffer(fileText)
+            }
+        ]
+        return this._ipfsClient.add(file, (err, response) => {
+            return callback(response[0].hash);
         });
     }
     public GetIpfsFile(ipfsHash: string, callback: any) {
