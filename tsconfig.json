@@ -6,6 +6,7 @@
             "dom"
         ],
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "baseUrl": ".",
         "paths": {
             "*": [

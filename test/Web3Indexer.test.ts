@@ -10,7 +10,7 @@ import Bootstrapper from '../src/Infra/IoC/Bootstrapper';
 test.skip('skip', () => { })
 jest.mock('../src/Application/Validator/Web3IndexerValidator');
 test("Web3Validator - Invalid address validation", () => {
-    Bootstrapper.RegisterServices();
+    // Bootstrapper.RegisterServices();
     let isAddressMock = jest.fn(() => {
         return false;
     });

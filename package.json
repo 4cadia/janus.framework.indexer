@@ -1,6 +1,6 @@
 {
   "name": "janusndxr",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "teste",
   "main": "dist/src/index.js",
   "bin": {
@@ -30,6 +30,7 @@
     "reflect-metadata": "^0.1.13",
     "scrypt": "^6.0.3",
     "web3": "^1.0.0-beta.54",
+    "tsyringe": "^3.2.0",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
@@ -44,7 +45,6 @@
     "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
     "tsutils": "^3.10.0",
-    "tsyringe": "^3.2.0",
     "typescript": "^3.4.5"
   },
   "files": [

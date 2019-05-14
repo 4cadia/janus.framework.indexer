@@ -12,7 +12,7 @@ export default class Web3IndexerService implements IWeb3IndexerService {
     private _indexerSm;
     constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig,
         @inject("IWeb3IndexerValidator") private _web3IndexerValidator: IWeb3IndexerValidator) {
-        this._web3 = new Web3("http://127.0.0.1:9545");
+        this._web3 = new Web3(`${_spiderConfig.RpcHost}:${_spiderConfig.RpcPort}`);
         this._indexerSm = new this._web3.eth.Contract(_spiderConfig.indexerSmAbi, _spiderConfig.indexerSmAddress);
     }
     public IndexHtml(htmlData: HtmlData, ownerAddress: string, callback: any) {

@@ -8,12 +8,12 @@ import Bootstrapper from '../src/Infra/IoC/Bootstrapper';
 test.skip('skip', () => { })
 jest.mock('../src/Application/Service/IpfsService');
 describe("Index Validator Test", () => {
-    Bootstrapper.RegisterServices();
+    // Bootstrapper.RegisterServices();
     let getIpfsMock = jest.fn((ipfsHash: string, callback: any) => {
         callback(null, null);
     });
-    let ipfsService = new IpfsService();
-    ipfsService.GetIpfsFile = getIpfsMock;
+    // let ipfsService = new IpfsService();
+    // ipfsService.GetIpfsFile = getIpfsMock;
     // ipfsService.GetIpfsHtml(null, indexResult => {
     //     it("Invalid File returns success equals false", () => {
     //         expect(indexResult.Success).toBeFalsy();
@@ -41,8 +41,8 @@ describe("Content Test", () => {
         }];
         callback(null, file);
     });
-    let ipfsService = new IpfsService();
-    ipfsService.GetIpfsFile = getIpfsMock;
+    // let ipfsService = new IpfsService();
+    // ipfsService.GetIpfsFile = getIpfsMock;
     // ipfsService.GetIpfsHtml(null, indexedResult => {
     //     console.log(indexedResult);
     //     it("Tag extraction", () => {
