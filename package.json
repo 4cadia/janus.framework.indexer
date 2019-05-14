@@ -1,15 +1,15 @@
 {
-  "name": "janusidx",
-  "version": "1.0.14",
+  "name": "janusndxr",
+  "version": "0.0.5",
   "description": "teste",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "bin": {
-    "janusidx": "dist/index.js"
+    "janusndxr": "dist/src/index.js"
   },
-  "types": "dist/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "start": "nodemon src/index.ts",
-    "create": "npm run build;janusidx",
+    "create": "npm run build;janusndxr",
     "build": "tsc -p . && npm run html",
     "test": "jest",
     "refresh": "rm -rf ./node_modules ./package-lock.json && npm install",
