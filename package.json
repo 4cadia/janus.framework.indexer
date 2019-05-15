@@ -1,6 +1,6 @@
 {
   "name": "janusndxr",
-  "version": "0.0.6",
+  "version": "0.0.10",
   "description": "teste",
   "main": "dist/src/index.js",
   "bin": {
@@ -29,8 +29,8 @@
     "path": "^0.12.7",
     "reflect-metadata": "^0.1.13",
     "scrypt": "^6.0.3",
-    "web3": "^1.0.0-beta.54",
     "tsyringe": "^3.2.0",
+    "web3": "^1.0.0-beta.54",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
