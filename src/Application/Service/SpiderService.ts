@@ -8,6 +8,7 @@ import ISpiderValidator from "../Interface/ISpiderValidator";
 import IndexRequest from "../../Domain/Entity/IndexRequest";
 import ISpiderService from "../Interface/ISpiderService";
 import { ContentType } from "../../Domain/Entity/ContentType";
+import TextHelper from '../../Infra/Helper/TextHelper';
 
 @injectable()
 export default class SpiderService implements ISpiderService {
@@ -23,18 +24,33 @@ export default class SpiderService implements ISpiderService {
 
             this._web3IndexerService.IndexHtml(htmlDataResult.HtmlData, ownerAddress, indexResult => {
                 callback(indexResult);
-            });
+            }); 
         });
     }
-    GetContent(IndexRequest: IndexRequest, ownerAddress: string, callback: any) {
-        if (IndexRequest.ContentType == ContentType.FilePath)
-            this._ipfsService.AddIpfsFile(IndexRequest.Content, (ipfsHash, fileText) => {
-                callback(ipfsHash, fileText);
-            });
-        else
-            this._ipfsService.GetIpfsFile(IndexRequest.Content, (error, file) => {
-                callback(IndexRequest.Content, file.content.toString("utf8"));
-            });
+    GetContent(indexRequest: IndexRequest, ownerAddress: string, callback: any) {
+
+        switch (indexRequest.ContentType) {
+            case ContentType.File:
+                this._ipfsService.AddIpfsFile(indexRequest.Content, (ipfsHash, fileText) => {
+                    callback(ipfsHash, fileText);
+                });
+                break;
+            case ContentType.Folder:
+                this._ipfsService.AddIpfsFolder(indexRequest.Content, (files) => {
+                    let htmlFiles = files.filter(file => {
+                        return TextHelper.FileIsHtml(file.path);
+                    });
+                    htmlFiles.forEach(htmlFile => {
+                        callback(htmlFile.hash, htmlFile.fileText);
+                    });
+                });
+                break;
+            case ContentType.Hash:
+                this._ipfsService.GetIpfsFile(indexRequest.Content, (error, file) => {
+                    callback(indexRequest.Content, file.content.toString("utf8"));
+                });
+                break;
+        }
     }
     private GetHtmlData(rawHtml: string, ipfsHash: string): IndexedHtmlResult {
         let htmlData = new HtmlData();
