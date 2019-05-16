@@ -10,14 +10,14 @@ import TextHelper from '../../Infra/Helper/TextHelper';
 export default class IpfsService implements IIpfsService {
     _ipfsClient;
     constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig) {
-        this._ipfsClient = new ipfsClient(_spiderConfig.ipfsHost, _spiderConfig.ipfsPort);
+        this._ipfsClient = new ipfsClient(_spiderConfig.ipfsHost, _spiderConfig.ipfsPort, { protocol: 'https' });
     }
     public AddIpfsFile(filePath: string, callback: any) {
         let fileText = fs.readFileSync(filePath, "utf8");
         let file = [
             {
                 path: filePath,
-                content: new Buffer(fileText)
+                content: Buffer.from(fileText)
             }
         ];
         return this._ipfsClient.add(file, (err, response) => {

@@ -7,4 +7,5 @@ export default class SpiderConfig {
     public ipfsPort: string;
     public indexerSmAddress: string;
     public indexerSmAbi;
+    public PrivateKey: string;
 }
