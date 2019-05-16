@@ -45,6 +45,7 @@ export default class Web3IndexerService implements IWeb3IndexerService {
                         .on('transactionHash', console.log);
                 });
             }
+            callback(result);
         });
     }
 }
