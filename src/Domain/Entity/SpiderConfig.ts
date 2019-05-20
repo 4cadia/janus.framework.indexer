@@ -8,4 +8,5 @@ export default class SpiderConfig {
     public indexerSmAddress: string;
     public indexerSmAbi;
     public PrivateKey: string;
+    public Web3Provider: any;
 }
