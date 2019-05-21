@@ -24,7 +24,7 @@ export default class SpiderService implements ISpiderService {
 
             this._web3IndexerService.IndexHtml(htmlDataResult.HtmlData, ownerAddress, indexResult => {
                 callback(indexResult);
-            }); 
+            });
         });
     }
     GetContent(indexRequest: IndexRequest, ownerAddress: string, callback: any) {
@@ -58,7 +58,9 @@ export default class SpiderService implements ISpiderService {
         htmlData.HtmlContent = rawHtml;
         let htmlDoc = new DOMParser().parseFromString(htmlData.HtmlContent, "text/xml");
         htmlData.Title = GetTitleValue(htmlDoc);
-        htmlData.Tags = GetMetaTag(htmlDoc, "keywords").split(" ");
+        let tagsArray = GetMetaTag(htmlDoc, "keywords");
+        if (tagsArray)
+            htmlData.Tags = tagsArray.split(" ");
         htmlData.Description = GetMetaTag(htmlDoc, "description");
         htmlData.IpfsHash = ipfsHash;
         result.HtmlData = htmlData;
