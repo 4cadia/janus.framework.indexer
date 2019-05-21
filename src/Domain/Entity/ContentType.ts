@@ -1,4 +1,5 @@
 export enum ContentType {
-    IpfsHash,
-    FilePath
+    Hash = "hash",
+    Folder = "folder",
+    File = "file"
 }

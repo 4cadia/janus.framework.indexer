@@ -11,15 +11,13 @@ export default class Bootstrapper {
     static Resolve<T>(token: InjectionToken<T>): T {
         return container.resolve(token);
     }
-    static RegisterServices() {
+    static RegisterServices(config: SpiderConfig) {
+        container.registerInstance("SpiderConfig", config);
         container.register("IIpfsService", {
             useClass: IpfsService
         });
         container.register("IWeb3IndexerService", {
             useClass: Web3IndexerService
-        });
-        container.register("SpiderConfig", {
-            useClass: SpiderConfig
         });
         container.register("ISpiderValidator", {
             useClass: ISpiderValidator

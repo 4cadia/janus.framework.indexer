@@ -10,7 +10,7 @@ export default class Web3IndexerValidator extends AbstractValidator<SpiderConfig
     private _web3;
     constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig) {
         super();
-        this._web3 = new Web3("http://127.0.0.1:9545");
+        this._web3 = new Web3(_spiderConfig.RpcHost);
     }
     ValidateIndexRequestAsync(htmlData: HtmlData, ownerAddress: string, callback: any) {
         this.ValidateAddress(ownerAddress, addressValidation => {
