@@ -5,9 +5,9 @@ import ISpiderValidator from "../Interface/ISpiderValidator";
 export default class SpiderValidator extends AbstractValidator<HtmlData> implements ISpiderValidator {
     constructor() {
         super();
-        this.validateIf(html => html.HtmlContent)
-            .isNotEmpty()
-            .withFailureMessage("Ipfs file not found");
+        // this.validateIf(html => html.HtmlContent)
+        //     .isNotEmpty()
+        //     .withFailureMessage("Ipfs file not found");
 
         this.validateIf(html => html.Description)
             .isNotEmpty()

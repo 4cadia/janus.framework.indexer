@@ -13,16 +13,17 @@ export default class Web3IndexerValidator extends AbstractValidator<SpiderConfig
         this._web3 = new Web3(_spiderConfig.RpcHost);
     }
     ValidateIndexRequestAsync(htmlData: HtmlData, ownerAddress: string, callback: any) {
-        this.ValidateAddress(ownerAddress, addressValidation => {
-            if (!addressValidation.isValid())
-                return callback(addressValidation);
-            this.WebSiteExists(htmlData.IpfsHash, ownerAddress, exists => {
-                this.validateIf(s => exists)
-                    .isEqualTo(false)
-                    .withFailureMessage("Ipfs hash already indexed");
-                callback(this.validate(this._spiderConfig));
-            });
-        });
+
+        // this.ValidateAddress(ownerAddress, addressValidation => {
+        //     if (!addressValidation.isValid())
+        //         return callback(addressValidation);
+        //     this.WebSiteExists(htmlData.IpfsHash, ownerAddress, exists => {
+        //         this.validateIf(s => exists)
+        //             .isEqualTo(false)
+        //             .withFailureMessage("Ipfs hash already indexed");
+        //         callback(this.validate(this._spiderConfig));
+        //     });
+        // });
     }
     ValidateAddress(ownerAddress: string, callback: any) {
         this.validateIf(s => ownerAddress)
