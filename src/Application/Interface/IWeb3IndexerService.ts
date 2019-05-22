@@ -1,4 +1,4 @@
-import HtmlData from "../../Domain/Entity/HtmlData";
+import IndexedFile from "../..//Domain/Entity/IndexedFile";
 export default interface IWeb3IndexerService {
-    IndexHtml(htmlData: HtmlData, ownerAddress: string);
+    IndexHtml(indexedFile: IndexedFile, ownerAddress: string, callback: any);
 }

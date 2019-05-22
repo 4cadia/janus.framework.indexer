@@ -22,6 +22,7 @@ import { ContentType } from "./Domain/Entity/ContentType";
 //         });
 //     }
 // }
+
 let config = new SpiderConfig();
 config.RpcHost = jsonConfig.EthereumRpcHost;
 config.RpcPort = jsonConfig.EthereumRpcPort;
@@ -35,7 +36,7 @@ indexRequest.Content = "C:\\Users\\Victor Hugo Ramos\\Downloads\\TesteIndex";
 indexRequest.ContentType = ContentType.Folder;
 Bootstrapper.RegisterServices(config);
 let spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
-spiderService.AddContent(indexRequest, this._ownerAddress, indexResult => {
+spiderService.AddContent(indexRequest, "0xB8C0DF194E38EeF45F36Bd8fBbe41893ccc16D20", indexResult => {
     console.log(indexResult);
 });
 

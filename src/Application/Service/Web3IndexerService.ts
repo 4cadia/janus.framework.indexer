@@ -16,20 +16,19 @@ export default class Web3IndexerService implements IWeb3IndexerService {
         this._web3Provider = new Web3(_spiderConfig.Web3Provider);
         this._indexerSm = new this._web3Provider.eth.Contract(_spiderConfig.indexerSmAbi, _spiderConfig.indexerSmAddress);
     }
-    public IndexHtml(htmlData: HtmlData, ownerAddress: string) {
-        this._web3IndexerValidator.ValidateIndexRequestAsync(htmlData, ownerAddress, validation => {
-            let result = new IndexedFile();
-            // result.Success = validation.isValid();
-            // result.Errors = validation.getFailureMessages();
-            // result.HtmlData = htmlData;
-            // if (result.Success) {
-            //     this._indexerSm.methods.addWebSite(htmlData.IpfsHash,
-            //         htmlData.Tags,
-            //         htmlData.Title,
-            //         htmlData.Description)
-            //         .send({ from: ownerAddress, gas: 3000000 });
-            // }
-            callback(result);
+    public IndexHtml(indexedFile: IndexedFile, ownerAddress: string, callback: any) {
+        this._web3IndexerValidator.ValidateIndexRequestAsync(indexedFile, ownerAddress, validation => {
+            indexedFile.Success = validation.isValid();
+            indexedFile.Errors = validation.getFailureMessages();
+
+            if (indexedFile.Success) {
+                this._indexerSm.methods.addWebSite(indexedFile.IpfsHash,
+                    indexedFile.HtmlData.Tags,
+                    indexedFile.HtmlData.Title,
+                    indexedFile.HtmlData.Description)
+                    .send({ from: ownerAddress, gas: 3000000 });
+            }
+            callback(indexedFile);
         });
     }
 }

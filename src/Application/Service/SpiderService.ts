@@ -8,7 +8,6 @@ import ISpiderValidator from "../Interface/ISpiderValidator";
 import IndexRequest from "../../Domain/Entity/IndexRequest";
 import ISpiderService from "../Interface/ISpiderService";
 import { ContentType } from "../../Domain/Entity/ContentType";
-import TextHelper from '../../Infra/Helper/TextHelper';
 
 @injectable()
 export default class SpiderService implements ISpiderService {
@@ -20,14 +19,20 @@ export default class SpiderService implements ISpiderService {
         this.GetContent(IndexRequest, ownerAddress, (files) => {
             files.forEach(file => {
                 file = this.FillIndexedFile(file);
-                if (file.IsHtml && file.Success)
-                    this._web3IndexerService.IndexHtml(file.HtmlData, ownerAddress, indexResult => {
+                if (!file.IsHtml || !file.Success)
+                    callback(file);
+                else
+                    this._web3IndexerService.IndexHtml(file, ownerAddress, indexResult => {
                         callback(indexResult);
                     });
             });
         });
     }
     private FillIndexedFile(file: IndexedFile): IndexedFile {
+        //its a Path or no content
+        if (!file.Content)
+            return file;
+
         let htmlData = new HtmlData();
         let htmlDoc = new DOMParser().parseFromString(file.Content, "text/html");
         let tagsArray = GetMetaTag(htmlDoc, "keywords");
@@ -70,7 +75,8 @@ export default class SpiderService implements ISpiderService {
                 this._ipfsService.GetIpfsFile(indexRequest.Content, (error, fileResult) => {
                     let file = new IndexedFile();
                     file.IpfsHash = indexRequest.Content;
-                    file.Content = fileResult.content.toString("utf8");
+                    if (fileResult.content)
+                        file.Content = fileResult.content.toString("utf8");
                     files.push(file);
                     callback(files);
                 });
