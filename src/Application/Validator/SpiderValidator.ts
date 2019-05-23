@@ -1,8 +1,7 @@
 import HtmlData from "../../Domain/Entity/HtmlData";
 import { AbstractValidator } from 'fluent-ts-validator';
-import ISpiderValidator from "../Interface/ISpiderValidator";
 
-export default class SpiderValidator extends AbstractValidator<HtmlData> implements ISpiderValidator {
+export default class SpiderValidator extends AbstractValidator<HtmlData>  {
     constructor() {
         super();
         // this.validateIf(html => html.HtmlContent)

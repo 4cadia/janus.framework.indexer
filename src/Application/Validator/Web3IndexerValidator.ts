@@ -1,12 +1,11 @@
 const Web3 = require('web3');
 import { AbstractValidator } from "fluent-ts-validator/AbstractValidator";
-import IWeb3IndexerValidator from "../Interface/IWeb3IndexerValidator";
 import SpiderConfig from "../../Domain/Entity/SpiderConfig";
 import { inject, injectable } from "tsyringe";
 import IndexedFile from "../../Domain/Entity/IndexedFile";
 
 @injectable()
-export default class Web3IndexerValidator extends AbstractValidator<SpiderConfig> implements IWeb3IndexerValidator {
+export default class Web3IndexerValidator extends AbstractValidator<SpiderConfig> {
     private _web3;
     constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig) {
         super();

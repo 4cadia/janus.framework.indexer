@@ -19,12 +19,6 @@ export default class Bootstrapper {
         container.register("IWeb3IndexerService", {
             useClass: Web3IndexerService
         });
-        container.register("ISpiderValidator", {
-            useClass: ISpiderValidator
-        });
-        container.register("IWeb3IndexerValidator", {
-            useClass: Web3IndexerValidator
-        });
         container.register("ISpiderService", {
             useClass: SpiderService
         });
