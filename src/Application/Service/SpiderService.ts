@@ -18,12 +18,11 @@ export default class SpiderService implements ISpiderService {
         this.GetContent(IndexRequest, ownerAddress, (files) => {
             files.forEach(file => {
                 file = this.FillIndexedFile(file);
-                if (!file.IsHtml || !file.Success)
-                    callback(file);
-                else
-                    this._web3IndexerService.IndexHtml(file, ownerAddress, indexResult => {
-                        callback(indexResult);
-                    });
+                this._web3IndexerService.IndexFile(file, ownerAddress, (indexResult, indexCount) => {
+                    file = indexResult;
+                    if (indexCount == files.length)
+                        return callback(files);
+                });
             });
         });
     }
