@@ -31,9 +31,10 @@ export default class Web3IndexerService implements IWeb3IndexerService {
                     indexedFile.HtmlData.Tags,
                     indexedFile.HtmlData.Title,
                     indexedFile.HtmlData.Description)
-                    .call({ from: ownerAddress, gas: 3000000 })
-                    .then(x => {
+                    .send({ from: ownerAddress, gas: 3000000 })
+                    .on('transactionHash', ethHash => {
                         this._indexerCount++;
+                        indexedFile.HtmlData.EthHash = ethHash;
                         callback(indexedFile, this._indexerCount);
                     });
             }

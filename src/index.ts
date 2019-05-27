@@ -40,8 +40,8 @@ export default class Spider {
 //     config.Web3Provider = provider;
 
 //     let indexRequest = new IndexRequest();
-//     indexRequest.Content = "QmaJCmsCsBvJPfsKkiuhMGSRR89njQ16WCuhQGCdZsDM3L";
-//     indexRequest.ContentType = ContentType.Hash;
+//     indexRequest.Content = "C:\\Users\\Victor Hugo Ramos\\Downloads\\TesteVictor\\html.teste.victor";
+//     indexRequest.ContentType = ContentType.Folder;
 //     Bootstrapper.RegisterServices(config);
 //     let spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
 //     spiderService.AddContent(indexRequest, "0xB8C0DF194E38EeF45F36Bd8fBbe41893ccc16D20", indexResult => {
