@@ -40,14 +40,13 @@ connector.start().then(() => {
     config.Web3Provider = provider;
 
     let indexRequest = new IndexRequest();
-    indexRequest.Content = "C:\\Users\\rodrigo.oliveira\\Desktop\\deploy_janus\\staticexample\\";
+    indexRequest.Content = "C:\\Users\\rodrigo.oliveira\\Desktop\\deploy_janus\\staticexample";
     indexRequest.ContentType = ContentType.Folder;
     Bootstrapper.RegisterServices(config);
     let spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
     spiderService.AddContent(indexRequest, "0x17cA6A08758F4A078B9c53ca25E6F6736dF34094", indexResult => {
         console.log(indexResult);
     });
-
 });
 
 

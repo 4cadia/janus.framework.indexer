@@ -74,6 +74,16 @@ export default class SpiderService implements ISpiderService {
         return result;
     }
 
+    private GetMainFolder(content: string): string {
+        let splitedContent = content.split('\\');
+        let mainFolder = splitedContent[splitedContent.length - 1];
+
+        if (!mainFolder)
+            mainFolder = splitedContent[splitedContent.length - 2];
+
+        return mainFolder;
+    }
+
     GetContent(indexRequest: IndexRequest, ownerAddress: string, callback: any) {
         let files = new Array<IndexedFile>();
         switch (indexRequest.ContentType) {
@@ -87,11 +97,7 @@ export default class SpiderService implements ISpiderService {
                 });
                 break;
             case ContentType.Folder:
-                let splitedContent = indexRequest.Content.split('\\');
-                let mainFolder = splitedContent[splitedContent.length - 1];
-
-                if (!mainFolder)
-                    mainFolder = splitedContent[splitedContent.length - 2];
+                let mainFolder = this.GetMainFolder(indexRequest.Content);
 
                 this._ipfsService.AddIpfsFolder(indexRequest.Content, (filesResult) => {
 
