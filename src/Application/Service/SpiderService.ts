@@ -1,13 +1,15 @@
 const DOMParser = require('xmldom').DOMParser;
 import { injectable, inject } from "tsyringe";
+import JSZip from "jszip";
 import IIpfsService from "../Interface/IIpfsService";
 import IWeb3IndexerService from "../Interface/IWeb3IndexerService";
 import HtmlData from "../../Domain/Entity/HtmlData";
-import IndexedFile from "../../Domain/Entity/IndexedFile";
+import IndexedFile from "../../Domain/Entity/IndexedFile"
 import IndexRequest from "../../Domain/Entity/IndexRequest";
 import ISpiderService from "../Interface/ISpiderService";
 import { ContentType } from "../../Domain/Entity/ContentType";
 import SpiderValidator from '../../Application/Validator/SpiderValidator';
+import IpfsFile from "../../Domain/Entity/IpfsFile";
 
 @injectable()
 export default class SpiderService implements ISpiderService {
@@ -85,6 +87,36 @@ export default class SpiderService implements ISpiderService {
                     files.push(file);
                     callback(files);
                 });
+                break;
+            case ContentType.Zip:
+                let fileArray = new Array<IpfsFile>();
+                var zip = new JSZip();
+                zip.loadAsync(indexRequest.Content).then(
+                    zipFiles => {
+                        let fileCount = 0;
+                        zipFiles.forEach(() => fileCount++);
+                        zipFiles.forEach((fileName, file) => {
+                            file.async("text").then(fileContent => {
+                                let ipfsFile = new IpfsFile(); ""
+                                ipfsFile.path = fileName;
+                                ipfsFile.content = Buffer.from(fileContent);
+                                fileArray.push(ipfsFile);
+                                if (fileArray.length == fileCount) {
+                                    this._ipfsService.AddIpfsFileList(fileArray, (fileResponse) => {
+
+                                        let ipfsFiles = Array.from(fileResponse);
+                                        ipfsFiles.forEach(f => {
+                                            let file = new IndexedFile();
+                                            file.IpfsHash = (<any>f).hash;
+                                            file.Content = null;
+                                            files.push(file);
+                                        });
+                                        console.log(fileResponse);
+                                    });
+                                }
+                            });
+                        });
+                    });
                 break;
         }
     }

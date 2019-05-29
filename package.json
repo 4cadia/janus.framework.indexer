@@ -1,6 +1,6 @@
 {
   "name": "janusndxr",
-  "version": "0.0.33",
+  "version": "0.0.39",
   "description": "Janus Indexer Package",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -21,6 +21,7 @@
     "figlet": "^1.2.1",
     "fluent-ts-validator": "^3.0.2",
     "ipfs-http-client": "^30.1.3",
+    "jszip": "^3.2.1",
     "node-metamask": "^1.1.2",
     "path": "^0.12.7",
     "reflect-metadata": "^0.1.13",

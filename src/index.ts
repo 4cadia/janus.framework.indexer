@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+
 import "reflect-metadata";
 import Bootstrapper from './Infra/IoC/Bootstrapper';
 import ISpiderService from './Application/Interface/ISpiderService';
@@ -40,8 +40,8 @@ export default class Spider {
 //     config.Web3Provider = provider;
 
 //     let indexRequest = new IndexRequest();
-//     indexRequest.Content = "C:\\Users\\Victor Hugo Ramos\\Downloads\\TesteVictor\\html.teste.victor";
-//     indexRequest.ContentType = ContentType.Folder;
+//     indexRequest.Content = "C:\\Users\\Victor Hugo Ramos\\Downloads\\TesteVictor\\Teste123.zip";
+//     indexRequest.ContentType = ContentType.Zip;
 //     Bootstrapper.RegisterServices(config);
 //     let spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
 //     spiderService.AddContent(indexRequest, "0xB8C0DF194E38EeF45F36Bd8fBbe41893ccc16D20", indexResult => {
