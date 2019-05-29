@@ -3,69 +3,90 @@ import { injectable, inject } from "tsyringe";
 import IIpfsService from "../Interface/IIpfsService";
 import IWeb3IndexerService from "../Interface/IWeb3IndexerService";
 import HtmlData from "../../Domain/Entity/HtmlData";
-import IndexedHtmlResult from "../../Domain/Entity/IndexedHtmlResult";
-import ISpiderValidator from "../Interface/ISpiderValidator";
+import IndexedFile from "../../Domain/Entity/IndexedFile";
 import IndexRequest from "../../Domain/Entity/IndexRequest";
 import ISpiderService from "../Interface/ISpiderService";
 import { ContentType } from "../../Domain/Entity/ContentType";
-import TextHelper from '../../Infra/Helper/TextHelper';
+import SpiderValidator from '../../Application/Validator/SpiderValidator';
 
 @injectable()
 export default class SpiderService implements ISpiderService {
     constructor(@inject("IIpfsService") private _ipfsService: IIpfsService,
-        @inject("IWeb3IndexerService") private _web3IndexerService: IWeb3IndexerService,
-        @inject("ISpiderValidator") private _spiderValidator: ISpiderValidator) {
+        @inject("IWeb3IndexerService") private _web3IndexerService: IWeb3IndexerService) {
     }
     AddContent(IndexRequest: IndexRequest, ownerAddress: string, callback: any) {
-        this.GetContent(IndexRequest, ownerAddress, (ipfsHash, fileText) => {
-            let htmlDataResult = this.GetHtmlData(fileText, ipfsHash);
-            if (!htmlDataResult.Success)
-                return callback(htmlDataResult);
-
-            this._web3IndexerService.IndexHtml(htmlDataResult.HtmlData, ownerAddress, indexResult => {
-                callback(indexResult);
-            }); 
+        this.GetContent(IndexRequest, ownerAddress, (files) => {
+            files.forEach(file => {
+                file = this.FillIndexedFile(file);
+                this._web3IndexerService.IndexFile(file, ownerAddress, (indexResult, indexCount) => {
+                    file = indexResult;
+                    if (indexCount == files.length)
+                        return callback(files);
+                });
+            });
         });
     }
-    GetContent(indexRequest: IndexRequest, ownerAddress: string, callback: any) {
+    private FillIndexedFile(file: IndexedFile): IndexedFile {
+        //its a Path or no content
+        if (!file.Content)
+            return file;
 
+        let htmlData = new HtmlData();
+        let htmlDoc = new DOMParser({
+            errorHandler: {
+                warning: null,
+                error: null, fatalError: null
+            }
+        }).parseFromString(file.Content, "text/html");
+        let tagsArray = GetMetaTag(htmlDoc, "keywords");
+        file.IsHtml = tagsArray ? true : false;
+        if (file.IsHtml) {
+            htmlData.Title = GetTitleValue(htmlDoc);
+            htmlData.Description = GetMetaTag(htmlDoc, "description");
+            htmlData.Tags = tagsArray.split(",");
+            file.HtmlData = htmlData;
+            let validator = new SpiderValidator();
+            let validationResult = validator.ValidateHtmlData(htmlData);
+            file.Success = validationResult.isValid();
+            file.Errors = validationResult.getFailureMessages();
+        }
+
+        return file;
+    }
+    GetContent(indexRequest: IndexRequest, ownerAddress: string, callback: any) {
+        let files = new Array<IndexedFile>();
         switch (indexRequest.ContentType) {
             case ContentType.File:
                 this._ipfsService.AddIpfsFile(indexRequest.Content, (ipfsHash, fileText) => {
-                    callback(ipfsHash, fileText);
+                    let file = new IndexedFile();
+                    file.IpfsHash = ipfsHash;
+                    file.Content = fileText;
+                    files.push(file);
+                    callback(files);
                 });
                 break;
             case ContentType.Folder:
-                this._ipfsService.AddIpfsFolder(indexRequest.Content, (files) => {
-                    let htmlFiles = files.filter(file => {
-                        return TextHelper.FileIsHtml(file.path);
+                this._ipfsService.AddIpfsFolder(indexRequest.Content, (filesResult) => {
+                    filesResult.forEach(f => {
+                        let file = new IndexedFile();
+                        file.IpfsHash = f.hash;
+                        file.Content = f.fileText;
+                        files.push(file);
                     });
-                    htmlFiles.forEach(htmlFile => {
-                        callback(htmlFile.hash, htmlFile.fileText);
-                    });
+                    callback(files);
                 });
                 break;
             case ContentType.Hash:
-                this._ipfsService.GetIpfsFile(indexRequest.Content, (error, file) => {
-                    callback(indexRequest.Content, file.content.toString("utf8"));
+                this._ipfsService.GetIpfsFile(indexRequest.Content, (error, fileResult) => {
+                    let file = new IndexedFile();
+                    file.IpfsHash = indexRequest.Content;
+                    if (fileResult.content)
+                        file.Content = fileResult.content.toString("utf8");
+                    files.push(file);
+                    callback(files);
                 });
                 break;
         }
-    }
-    private GetHtmlData(rawHtml: string, ipfsHash: string): IndexedHtmlResult {
-        let htmlData = new HtmlData();
-        let result = new IndexedHtmlResult();
-        htmlData.HtmlContent = rawHtml;
-        let htmlDoc = new DOMParser().parseFromString(htmlData.HtmlContent, "text/xml");
-        htmlData.Title = GetTitleValue(htmlDoc);
-        htmlData.Tags = GetMetaTag(htmlDoc, "keywords").split(" ");
-        htmlData.Description = GetMetaTag(htmlDoc, "description");
-        htmlData.IpfsHash = ipfsHash;
-        result.HtmlData = htmlData;
-        let validationResult = this._spiderValidator.ValidateHtmlData(htmlData);
-        result.Success = validationResult.isValid();
-        result.Errors = validationResult.getFailureMessages();
-        return result;
     }
 }
 export function GetMetaTag(ipfsHtml, metaName): string {
@@ -79,5 +100,5 @@ export function GetMetaTag(ipfsHtml, metaName): string {
 }
 export function GetTitleValue(ipfsHtml): string {
     let title = ipfsHtml.getElementsByTagName('title')[0];
-    return title.textContent;
+    return title ? title.textContent : null;
 }

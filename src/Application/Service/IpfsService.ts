@@ -10,7 +10,7 @@ import TextHelper from '../../Infra/Helper/TextHelper';
 export default class IpfsService implements IIpfsService {
     _ipfsClient;
     constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig) {
-        this._ipfsClient = new ipfsClient(_spiderConfig.ipfsHost, _spiderConfig.ipfsPort, { protocol: 'https' });
+        this._ipfsClient = new ipfsClient(_spiderConfig.ipfsHost, _spiderConfig.ipfsPort, { protocol: 'http' });
     }
     public AddIpfsFile(filePath: string, callback: any) {
         let fileText = fs.readFileSync(filePath, "utf8");
@@ -26,11 +26,10 @@ export default class IpfsService implements IIpfsService {
     }
     public AddIpfsFolder(folderPath: string, callback: any) {
         this._ipfsClient.addFromFs(folderPath, { recursive: true }, (err, result) => {
-            result.filter(file => {
-                return TextHelper.IsFile(file.path);
-            }).forEach(file => {
+            result.forEach(file => {
                 let filePath = path.join(path.dirname(folderPath), file.path);
-                file.fileText = fs.readFileSync(filePath, "utf8");
+                if (!fs.lstatSync(filePath).isDirectory())
+                    file.fileText = fs.readFileSync(filePath, "utf8");
             });
             callback(result);
         })

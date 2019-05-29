@@ -1,16 +1,13 @@
 import HtmlData from "../../Domain/Entity/HtmlData";
 import { AbstractValidator } from 'fluent-ts-validator';
-import ISpiderValidator from "../Interface/ISpiderValidator";
 
-export default class SpiderValidator extends AbstractValidator<HtmlData> implements ISpiderValidator {
+export default class SpiderValidator extends AbstractValidator<HtmlData>  {
     constructor() {
         super();
-        this.validateIf(html => html.HtmlContent)
-            .isNotEmpty()
-            .withFailureMessage("Ipfs file not found");
 
         this.validateIf(html => html.Description)
             .isNotEmpty()
+            .isNotNull()
             .withFailureMessage("Description can't be empty");
 
         this.validateIf(html => html.Tags)
@@ -19,6 +16,7 @@ export default class SpiderValidator extends AbstractValidator<HtmlData> impleme
 
         this.validateIf(html => html.Title)
             .isNotEmpty()
+            .isNotNull()
             .withFailureMessage("Title can't be empty");
     }
 

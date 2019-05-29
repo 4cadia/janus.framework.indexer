@@ -1,22 +1,21 @@
 const Web3 = require('web3');
 import { AbstractValidator } from "fluent-ts-validator/AbstractValidator";
-import IWeb3IndexerValidator from "../Interface/IWeb3IndexerValidator";
 import SpiderConfig from "../../Domain/Entity/SpiderConfig";
-import HtmlData from '../../Domain/Entity/HtmlData';
 import { inject, injectable } from "tsyringe";
+import IndexedFile from "../../Domain/Entity/IndexedFile";
 
 @injectable()
-export default class Web3IndexerValidator extends AbstractValidator<SpiderConfig> implements IWeb3IndexerValidator {
+export default class Web3IndexerValidator extends AbstractValidator<SpiderConfig> {
     private _web3;
     constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig) {
         super();
         this._web3 = new Web3(_spiderConfig.RpcHost);
     }
-    ValidateIndexRequestAsync(htmlData: HtmlData, ownerAddress: string, callback: any) {
+    ValidateIndexRequestAsync(indexedFile: IndexedFile, ownerAddress: string, callback: any) {
         this.ValidateAddress(ownerAddress, addressValidation => {
             if (!addressValidation.isValid())
                 return callback(addressValidation);
-            this.WebSiteExists(htmlData.IpfsHash, ownerAddress, exists => {
+            this.WebSiteExists(indexedFile.IpfsHash, ownerAddress, exists => {
                 this.validateIf(s => exists)
                     .isEqualTo(false)
                     .withFailureMessage("Ipfs hash already indexed");
