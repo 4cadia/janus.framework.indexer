@@ -94,29 +94,31 @@ export default class SpiderService implements ISpiderService {
                 zip.loadAsync(indexRequest.Content).then(
                     zipFiles => {
                         let fileCount = 0;
-                        zipFiles.forEach(() => fileCount++);
+                        fileCount = zipFiles.folder().filter((fn, f) => !f.dir).length;
                         zipFiles.forEach((fileName, file) => {
-                            file.async("text").then(fileContent => {
-                                let ipfsFile = new IpfsFile(); ""
-                                ipfsFile.path = fileName;
-                                ipfsFile.content = Buffer.from(fileContent);
-                                fileArray.push(ipfsFile);
-                                if (fileArray.length == fileCount) {
-                                    this._ipfsService.AddIpfsFileList(fileArray, (fileResponse) => {
-                                        let ipfsFiles = Array.from(fileResponse);
-                                        ipfsFiles.forEach(ipfsFile => {
-                                            let fileArrayItem = fileArray.find(f => { return f.path == (<any>ipfsFile).path });
-                                            if (fileArrayItem) {
-                                                let file = new IndexedFile();
-                                                file.IpfsHash = (<any>ipfsFile).hash;
-                                                file.Content = fileArrayItem.content.toString();
-                                                files.push(file);
-                                            }
+                            if (!file.dir) {
+                                file.async("text").then(fileContent => {
+                                    let ipfsFile = new IpfsFile();
+                                    ipfsFile.path = fileName;
+                                    ipfsFile.content = Buffer.from(fileContent);
+                                    fileArray.push(ipfsFile);
+                                    if (fileArray.length == fileCount) {
+                                        this._ipfsService.AddIpfsFileList(fileArray, (fileResponse) => {
+                                            let ipfsFiles = Array.from(fileResponse);
+                                            ipfsFiles.forEach(ipfsFile => {
+                                                let fileArrayItem = fileArray.find(f => { return f.path == (<any>ipfsFile).path });
+                                                if (fileArrayItem) {
+                                                    let file = new IndexedFile();
+                                                    file.IpfsHash = (<any>ipfsFile).hash;
+                                                    file.Content = fileArrayItem.content.toString();
+                                                    files.push(file);
+                                                }
+                                            });
+                                            callback(files);
                                         });
-                                        callback(files);
-                                    });
-                                }
-                            });
+                                    }
+                                });
+                            }
                         });
                     });
                 break;
