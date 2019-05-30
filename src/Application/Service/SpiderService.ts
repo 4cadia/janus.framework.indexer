@@ -18,11 +18,11 @@ export default class SpiderService implements ISpiderService {
     constructor(@inject("IIpfsService") private _ipfsService: IIpfsService,
         @inject("IWeb3IndexerService") private _web3IndexerService: IWeb3IndexerService) {
     }
-    AddContent(IndexRequest: IndexRequest, ownerAddress: string, callback: any) {
-        this.GetContent(IndexRequest, ownerAddress, (files) => {
+    AddContent(IndexRequest: IndexRequest, callback: any) {
+        this.GetContent(IndexRequest, (files) => {
             files.forEach(file => {
                 file = this.FillIndexedFile(file);
-                this._web3IndexerService.IndexFile(file, ownerAddress, (indexResult, indexCount) => {
+                this._web3IndexerService.IndexFile(file, IndexRequest.Address, (indexResult, indexCount) => {
                     file = indexResult;
                     if (indexCount == files.length)
                         return callback(files);
@@ -86,7 +86,7 @@ export default class SpiderService implements ISpiderService {
         return mainFolder;
     }
 
-    GetContent(indexRequest: IndexRequest, ownerAddress: string, callback: any) {
+    GetContent(indexRequest: IndexRequest, callback: any) {
         let files = new Array<IndexedFile>();
         switch (indexRequest.ContentType) {
             case ContentType.File:

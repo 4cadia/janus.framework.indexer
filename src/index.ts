@@ -28,7 +28,7 @@ export default class Spider {
             return callback(result);
 
         let spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
-        spiderService.AddContent(indexRequest, indexRequest.Address, indexResult => {
+        spiderService.AddContent(indexRequest, indexResult => {
             result.IndexedFiles = indexResult;
             callback(indexResult);
         });
@@ -39,10 +39,11 @@ export default class Spider {
 // let connector = new MetaMaskConnector({
 //     port: 3333,
 // });
-// let provider = connector.getProvider();
+
 // console.log("Sign in transaction through metamask connector: http://localhost:3333");
 // connector.start().then(() => {
 //     let config = new SpiderConfig();
+//     let provider = connector.getProvider();
 //     config.RpcHost = jsonConfig.EthereumRpcHost;
 //     config.RpcPort = jsonConfig.EthereumRpcPort;
 //     config.ipfsHost = jsonConfig.IpfsRpcHost;
@@ -52,11 +53,12 @@ export default class Spider {
 //     config.Web3Provider = provider;
 
 //     let indexRequest = new IndexRequest();
-//     indexRequest.Content = "C:\\Users\\Victor Hugo Ramos\\Downloads\\TesteVictor";
+//     indexRequest.Content = "C:\\Users\\Victor Hugo Ramos\\Downloads\\TesteVictor\\4files";
 //     indexRequest.ContentType = ContentType.Folder;
+//     indexRequest.Address = "0xB8C0DF194E38EeF45F36Bd8fBbe41893ccc16D20";
 //     Bootstrapper.RegisterServices(config);
 //     let spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
-//     spiderService.AddContent(indexRequest, "abc", indexResult => {
+//     spiderService.AddContent(indexRequest, indexResult => {
 //         console.log(indexResult);
 //     });
 // });
