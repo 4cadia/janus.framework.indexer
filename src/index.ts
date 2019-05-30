@@ -12,15 +12,14 @@ import IndexRequestValidator from './Application/Validator/IndexRequestValidator
 import IndexedResult from './Domain/Entity/IndexedResult';
 
 export default class Spider {
-    _ownerAddress: string;
-    constructor(ownerAddress: string,
-        spiderConfig: SpiderConfig) {
-        this._ownerAddress = ownerAddress;
+    _spiderConfig: SpiderConfig;
+    constructor(spiderConfig: SpiderConfig) {
+        this._spiderConfig = spiderConfig;
         Bootstrapper.RegisterServices(spiderConfig);
     }
     AddContent(indexRequest: IndexRequest,
         callback: any) {
-        let validator = new IndexRequestValidator();
+        let validator = new IndexRequestValidator(this._spiderConfig);
         let result = new IndexedResult();
         let validation = validator.validate(indexRequest);
         result.Success = validation.isValid();
@@ -29,16 +28,13 @@ export default class Spider {
             return callback(result);
 
         let spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
-        spiderService.AddContent(indexRequest, this._ownerAddress, indexResult => {
+        spiderService.AddContent(indexRequest, indexRequest.Address, indexResult => {
             result.IndexedFiles = indexResult;
             callback(indexResult);
         });
     }
 }
 
-
-// let teste = fs.existsSync("C:\\Users\\Victor Hugo Ramos\\Downloads\\TesteVictor\\danilo.html");
-// console.log(teste);
 
 // let connector = new MetaMaskConnector({
 //     port: 3333,
@@ -56,11 +52,11 @@ export default class Spider {
 //     config.Web3Provider = provider;
 
 //     let indexRequest = new IndexRequest();
-//     indexRequest.Content = "C:\\Users\\Victor Hugo Ramos\\Downloads\\TesteVictor\\Teste123.zip";
-//     indexRequest.ContentType = ContentType.Zip;
+//     indexRequest.Content = "C:\\Users\\Victor Hugo Ramos\\Downloads\\TesteVictor";
+//     indexRequest.ContentType = ContentType.Folder;
 //     Bootstrapper.RegisterServices(config);
 //     let spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
-//     spiderService.AddContent(indexRequest, "0xB8C0DF194E38EeF45F36Bd8fBbe41893ccc16D20", indexResult => {
+//     spiderService.AddContent(indexRequest, "abc", indexResult => {
 //         console.log(indexResult);
 //     });
 // });

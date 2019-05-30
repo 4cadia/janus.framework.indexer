@@ -1,12 +1,16 @@
+const Web3 = require('web3');
 import { AbstractValidator } from "fluent-ts-validator";
 import IndexRequest from "../../Domain/Entity/IndexRequest";
 import fs from "fs";
-import { ContentType } from "../../Domain/Entity/ContentType";
+import { ContentType } from '../../Domain/Entity/ContentType';
+import { inject } from 'tsyringe';
+import SpiderConfig from "../../Domain/Entity/SpiderConfig";
 
 export default class IndexRequestValidator extends AbstractValidator<IndexRequest>  {
 
-    constructor() {
+    constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig) {
         super();
+        let web3 = new Web3(_spiderConfig.RpcHost)
         this.validateIf(i => i.Content)
             .isNotEmpty()
             .isNotNull()
@@ -17,11 +21,12 @@ export default class IndexRequestValidator extends AbstractValidator<IndexReques
             .when(i => i.ContentType == ContentType.Folder || i.ContentType == ContentType.File)
             .withFailureMessage("Invalid Path");
 
-        // var zip = new JSZip();
-        // zip.loadAsync(null).then(zipf => {
-        //     console.log("sucesso");
-        // }, err => {
-        //     console.log("error");
-        // });
+        this.validateIf(i => i.ContentType)
+            .fulfills(type => type == ContentType.File || type == ContentType.Folder || type == ContentType.Zip)
+            .withFailureMessage("Invalid content type");
+
+        this.validateIf(i => i.Address)
+            .fulfills(address => web3.utils.isAddress(address))
+            .withFailureMessage("Invalid Ethereum Address");
     }
 }

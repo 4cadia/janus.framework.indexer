@@ -1,6 +1,6 @@
 {
   "name": "janusndxr",
-  "version": "0.0.51",
+  "version": "0.0.53",
   "description": "Janus Indexer Package",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
