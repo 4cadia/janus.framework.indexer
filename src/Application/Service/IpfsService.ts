@@ -40,6 +40,7 @@ export default class IpfsService implements IIpfsService {
             callback(result);
         })
     }
+
     public GetIpfsFile(ipfsHash: string, callback: any) {
         return this._ipfsClient.get(ipfsHash, (error, files) => {
             callback(error, files[0]);
