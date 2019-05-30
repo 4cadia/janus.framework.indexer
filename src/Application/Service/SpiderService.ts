@@ -103,15 +103,17 @@ export default class SpiderService implements ISpiderService {
                                 fileArray.push(ipfsFile);
                                 if (fileArray.length == fileCount) {
                                     this._ipfsService.AddIpfsFileList(fileArray, (fileResponse) => {
-
                                         let ipfsFiles = Array.from(fileResponse);
-                                        ipfsFiles.forEach(f => {
-                                            let file = new IndexedFile();
-                                            file.IpfsHash = (<any>f).hash;
-                                            file.Content = null;
-                                            files.push(file);
+                                        ipfsFiles.forEach(ipfsFile => {
+                                            let fileArrayItem = fileArray.find(f => { return f.path == (<any>ipfsFile).path });
+                                            if (fileArrayItem) {
+                                                let file = new IndexedFile();
+                                                file.IpfsHash = (<any>ipfsFile).hash;
+                                                file.Content = fileArrayItem.content.toString();
+                                                files.push(file);
+                                            }
                                         });
-                                        console.log(fileResponse);
+                                        callback(files);
                                     });
                                 }
                             });

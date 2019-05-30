@@ -26,7 +26,7 @@ export default class IpfsService implements IIpfsService {
         });
     }
     AddIpfsFileList(fileArray: Array<IpfsFile>, callback: any) {
-        return this._ipfsClient.add(fileArray, (err, response) => {
+        return this._ipfsClient.add(fileArray, { recursive: true }, (err, response) => {
             return callback(response);
         });
     }
