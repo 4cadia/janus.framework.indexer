@@ -1,5 +1,6 @@
 const DOMParser = require('xmldom').DOMParser;
 const Path = require('path');
+const isHtml = require('is-html');
 import { injectable, inject } from "tsyringe";
 import JSZip from "jszip";
 import IIpfsService from "../Interface/IIpfsService";
@@ -35,26 +36,27 @@ export default class SpiderService implements ISpiderService {
         if (!file.Content)
             return file;
 
+        file.IsHtml = isHtml(file.Content);
+        if (!file.IsHtml)
+            return file;
+
         let htmlData = new HtmlData();
         let htmlDoc = new DOMParser({
             errorHandler: {
                 warning: null,
-                error: null, fatalError: null
+                error: null,
+                fatalError: null
             }
         }).parseFromString(file.Content, "text/html");
         let tagsArray = GetMetaTag(htmlDoc, "keywords");
-        file.IsHtml = tagsArray ? true : false;
-        if (file.IsHtml) {
-            htmlData.Title = GetTitleValue(htmlDoc);
-            htmlData.Description = GetMetaTag(htmlDoc, "description");
-            htmlData.Tags = tagsArray.split(",");
-            file.HtmlData = htmlData;
-            let validator = new SpiderValidator();
-            let validationResult = validator.ValidateHtmlData(htmlData);
-            file.Success = validationResult.isValid();
-            file.Errors = validationResult.getFailureMessages();
-        }
-
+        htmlData.Title = GetTitleValue(htmlDoc);
+        htmlData.Description = GetMetaTag(htmlDoc, "description");
+        htmlData.Tags = tagsArray ? tagsArray.split(",") : null;
+        file.HtmlData = htmlData;
+        let validator = new SpiderValidator();
+        let validationResult = validator.ValidateHtmlData(htmlData);
+        file.Success = validationResult.isValid();
+        file.Errors = validationResult.getFailureMessages();
         return file;
     }
 
