@@ -1,4 +1,5 @@
 const Web3 = require('web3');
+const JSZip = require("jszip");
 import { AbstractValidator } from "fluent-ts-validator";
 import IndexRequest from "../../Domain/Entity/IndexRequest";
 import fs from "fs";
@@ -8,9 +9,9 @@ import SpiderConfig from "../../Domain/Entity/SpiderConfig";
 
 export default class IndexRequestValidator extends AbstractValidator<IndexRequest>  {
 
-    constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig) {
+    constructor(@inject("SpiderConfig") _spiderConfig: SpiderConfig) {
         super();
-        let web3 = new Web3(_spiderConfig.RpcHost)
+        let web3 = new Web3(_spiderConfig.RpcHost);
         this.validateIf(i => i.Content)
             .isNotEmpty()
             .isNotNull()
@@ -29,4 +30,16 @@ export default class IndexRequestValidator extends AbstractValidator<IndexReques
             .fulfills(address => web3.utils.isAddress(address))
             .withFailureMessage("Invalid Ethereum Address");
     }
+    // public ValidateRequest(indexRequest: IndexRequest, callback: any): any {
+    //     this.ValidateZipFile(indexRequest.Content, validZip => {
+    //         this.validateIf(validZip)
+    //             .isEqualTo(true)
+    //             .withFailureMessage("Invalid Zip file");
+    //         return callback(this.validate(indexRequest));
+    //     });
+    // }
+    // public ValidateZipFile(content: string, callback: any) {
+    //     let zip = new JSZip();
+    //     zip.loadAsync(content).then(() => { callback(true); }, () => { callback(false); })
+    // }
 }

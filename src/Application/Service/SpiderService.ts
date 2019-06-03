@@ -59,10 +59,8 @@ export default class SpiderService implements ISpiderService {
         file.Errors = validationResult.getFailureMessages();
         return file;
     }
-
     private ChangeToMainHash(mainHash: string, files: IndexedFile[]): IndexedFile[] {
         let result = new Array<IndexedFile>();
-
         files.forEach(file => {
             let changedFile = new IndexedFile();
             changedFile.IpfsHash = mainHash;
@@ -77,7 +75,6 @@ export default class SpiderService implements ISpiderService {
 
         return result;
     }
-
     private GetMainFolder(content: string): string {
         let splitedContent = content.split('\\');
         let mainFolder = splitedContent[splitedContent.length - 1];
@@ -87,7 +84,6 @@ export default class SpiderService implements ISpiderService {
 
         return mainFolder;
     }
-
     GetContent(indexRequest: IndexRequest, callback: any) {
         let files = new Array<IndexedFile>();
         switch (indexRequest.ContentType) {
@@ -102,7 +98,6 @@ export default class SpiderService implements ISpiderService {
                 break;
             case ContentType.Folder:
                 let mainFolder = this.GetMainFolder(indexRequest.Content);
-
                 this._ipfsService.AddIpfsFolder(indexRequest.Content, (filesResult) => {
 
                     let mainHash: string;
@@ -118,9 +113,7 @@ export default class SpiderService implements ISpiderService {
                         file.Content = f.fileText;
                         files.push(file);
                     });
-
                     let result = this.ChangeToMainHash(mainHash, files);
-
                     callback(result);
                 });
                 break;
