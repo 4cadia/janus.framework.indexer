@@ -23,7 +23,7 @@ export default class IndexRequestValidator extends AbstractValidator<IndexReques
             .withFailureMessage("Invalid Path");
 
         this.validateIf(i => i.ContentType)
-            .fulfills(type => type == ContentType.File || type == ContentType.Folder || type == ContentType.Zip)
+            .fulfills(type => type == ContentType.Hash || type == ContentType.File || type == ContentType.Folder || type == ContentType.Zip)
             .withFailureMessage("Invalid content type");
 
         this.validateIf(i => i.Address)
