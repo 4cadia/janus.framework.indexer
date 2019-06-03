@@ -43,21 +43,20 @@ export default class IndexRequestValidator extends AbstractValidator<IndexReques
                 return callback(this.validate(indexRequest));
             });
         }
+        else if (indexRequest.ContentType == ContentType.Zip) {
+            this.ValidateZipFile(indexRequest.Content, validZip => {
+                indexRequest.ValidZip = validZip;
+                this.validateIf(i => i.ValidZip)
+                    .isEqualTo(true)
+                    .withFailureMessage("Invalid Zip file");
+                return callback(this.validate(indexRequest));
+            });
+        }
         else
             return callback(this.validate(indexRequest));
     }
-
-
-    // public ValidateRequest(indexRequest: IndexRequest, callback: any): any {
-    //     this.ValidateZipFile(indexRequest.Content, validZip => {
-    //         this.validateIf(validZip)
-    //             .isEqualTo(true)
-    //             .withFailureMessage("Invalid Zip file");
-    //         return callback(this.validate(indexRequest));
-    //     });
-    // }
-    // public ValidateZipFile(content: string, callback: any) {
-    //     let zip = new JSZip();
-    //     zip.loadAsync(content).then(() => { callback(true); }, () => { callback(false); })
-    // }
+    public ValidateZipFile(content: string, callback: any) {
+        let zip = new JSZip();
+        zip.loadAsync(content).then(zipFiles => { callback(true); }, () => { callback(false); })
+    }
 }

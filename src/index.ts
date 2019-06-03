@@ -60,7 +60,7 @@ export default class Spider {
 
 //     let indexRequest = new IndexRequest();
 //     indexRequest.Content = "abc";
-//     indexRequest.ContentType = ContentType.Hash;
+//     indexRequest.ContentType = ContentType.Zip;
 //     indexRequest.Address = "0xB8C0DF194E38EeF45F36Bd8fBbe41893ccc16D20";
 //     Bootstrapper.RegisterServices(config);
 //     let spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
