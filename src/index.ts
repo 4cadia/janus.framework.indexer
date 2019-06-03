@@ -11,27 +11,32 @@ import JSZip from "jszip";
 import IndexRequestValidator from './Application/Validator/IndexRequestValidator';
 import IndexedResult from './Domain/Entity/IndexedResult';
 import { ValidationResult } from "fluent-ts-validator";
+import IIpfsService from "./Application/Interface/IIpfsService";
 
 export default class Spider {
     _spiderConfig: SpiderConfig;
+    _spiderService;
+    _ipfsService;
     constructor(spiderConfig: SpiderConfig) {
         this._spiderConfig = spiderConfig;
         Bootstrapper.RegisterServices(spiderConfig);
+        this._spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
+        this._ipfsService = Bootstrapper.Resolve<IIpfsService>("IIpfsService");
     }
     AddContent(indexRequest: IndexRequest,
         callback: any) {
-        let validator = new IndexRequestValidator(this._spiderConfig);
+        let validator = new IndexRequestValidator(this._spiderConfig, this._ipfsService);
         let result = new IndexedResult();
-        let validation = validator.validate(indexRequest);
-        result.Success = validation.isValid();
-        result.Errors = validation.getFailureMessages();
-        if (!result.Success)
-            return callback(result);
+        validator.ValidateRequest(indexRequest, validation => {
+            result.Success = validation.isValid();
+            result.Errors = validation.getFailureMessages();
+            if (!result.Success)
+                return callback(result);
 
-        let spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
-        spiderService.AddContent(indexRequest, indexResult => {
-            result.IndexedFiles = indexResult;
-            callback(result);
+            this._spiderService.AddContent(indexRequest, indexResult => {
+                result.IndexedFiles = indexResult;
+                callback(result);
+            });
         });
     }
 }
@@ -54,19 +59,23 @@ export default class Spider {
 //     config.Web3Provider = provider;
 
 //     let indexRequest = new IndexRequest();
-//     indexRequest.Content = "C:\\Users\\Victor Hugo Ramos\\Downloads\\TesteVictor\\4files2\\4files";
-//     indexRequest.ContentType = ContentType.Folder;
+//     indexRequest.Content = "abc";
+//     indexRequest.ContentType = ContentType.Hash;
 //     indexRequest.Address = "0xB8C0DF194E38EeF45F36Bd8fBbe41893ccc16D20";
-//     let validator = new IndexRequestValidator(config);
-//     let result = new IndexedResult();
-//     let validation = validator.validate(indexRequest);
-//     let error = validation.getFailureMessages();
-//     console.log(error);
 //     Bootstrapper.RegisterServices(config);
 //     let spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
-//     spiderService.AddContent(indexRequest, indexResult => {
-//         console.log(indexResult);
+//     let ipfsService = Bootstrapper.Resolve<IIpfsService>("IIpfsService");
+//     let validator = new IndexRequestValidator(config, ipfsService);
+//     let result = new IndexedResult();
+//     validator.ValidateRequest(indexRequest, validation => {
+//         let error = validation.getFailureMessages();
+//         console.log(error);
+//         spiderService.AddContent(indexRequest, indexResult => {
+//             console.log(indexResult);
+//         });
 //     });
+
+
 // });
 
 

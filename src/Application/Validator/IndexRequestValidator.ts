@@ -6,10 +6,12 @@ import fs from "fs";
 import { ContentType } from '../../Domain/Entity/ContentType';
 import { inject } from 'tsyringe';
 import SpiderConfig from "../../Domain/Entity/SpiderConfig";
+import IIpfsService from "../Interface/IIpfsService";
 
 export default class IndexRequestValidator extends AbstractValidator<IndexRequest>  {
 
-    constructor(@inject("SpiderConfig") _spiderConfig: SpiderConfig) {
+    constructor(@inject("SpiderConfig") _spiderConfig: SpiderConfig,
+        @inject("IIpfsService") private _ipfsService: IIpfsService) {
         super();
         let web3 = new Web3(_spiderConfig.RpcHost);
         this.validateIf(i => i.Content)
@@ -30,6 +32,22 @@ export default class IndexRequestValidator extends AbstractValidator<IndexReques
             .fulfills(address => web3.utils.isAddress(address))
             .withFailureMessage("Invalid Ethereum Address");
     }
+
+    public ValidateRequest(indexRequest: IndexRequest, callback: any): any {
+
+        if (indexRequest.ContentType == ContentType.Hash) {
+            this._ipfsService.HashExists(indexRequest.Content, exists => {
+                this.validateIf(exists)
+                    .isEqualTo(true)
+                    .withFailureMessage("Invalid Ipfs hash");
+                return callback(this.validate(indexRequest));
+            });
+        }
+        else
+            return callback(this.validate(indexRequest));
+    }
+
+
     // public ValidateRequest(indexRequest: IndexRequest, callback: any): any {
     //     this.ValidateZipFile(indexRequest.Content, validZip => {
     //         this.validateIf(validZip)
