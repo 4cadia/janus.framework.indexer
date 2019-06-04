@@ -4,5 +4,5 @@ export default class IndexRequest {
     public Content: any;
     public ContentType: ContentType;
     public Address: string;
-    public ValidZip: boolean;
+    public ValidZip: string;
 }

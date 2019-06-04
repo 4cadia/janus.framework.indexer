@@ -32,7 +32,6 @@ export default class IndexRequestValidator extends AbstractValidator<IndexReques
             .fulfills(address => web3.utils.isAddress(address))
             .withFailureMessage("Invalid Ethereum Address");
     }
-
     public ValidateRequest(indexRequest: IndexRequest, callback: any): any {
 
         if (indexRequest.ContentType == ContentType.Hash) {
@@ -47,7 +46,7 @@ export default class IndexRequestValidator extends AbstractValidator<IndexReques
             this.ValidateZipFile(indexRequest.Content, validZip => {
                 indexRequest.ValidZip = validZip;
                 this.validateIf(i => i.ValidZip)
-                    .isEqualTo(true)
+                    .isDefined()
                     .withFailureMessage("Invalid Zip file");
                 return callback(this.validate(indexRequest));
             });
@@ -57,6 +56,6 @@ export default class IndexRequestValidator extends AbstractValidator<IndexReques
     }
     public ValidateZipFile(content: string, callback: any) {
         let zip = new JSZip();
-        zip.loadAsync(content).then(zipFiles => { callback(true); }, () => { callback(false); })
+        zip.loadAsync(content).then(zipFiles => { callback(zipFiles.folder()); }, () => { callback(); })
     }
 }
