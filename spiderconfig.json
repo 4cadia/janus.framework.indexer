@@ -1,8 +1,9 @@
 {
     "EthereumRpcHost": "https://rinkeby.infura.io/v3/9d29be50765b44a08196e457db9b40db",
     "EthereumRpcPort": "443",
-    "IpfsRpcHost": "54.158.29.17",
+    "IpfsRpcHost": "ipfs.caralabs.me",
     "IpfsRpcPort": "5001",
+    "IpfsProtocol": "http",
     "indexerSmAddress": "0x50ae17b684fd694926865f1e1858553cc17670a2",
     "indexerSmAbi": [
         {

@@ -5,12 +5,13 @@ import { injectable, inject } from 'tsyringe';
 import fs from "fs";
 import path from "path";
 import TextHelper from '../../Infra/Helper/TextHelper';
+import IpfsFile from '../../Domain/Entity/IpfsFile';
 
 @injectable()
 export default class IpfsService implements IIpfsService {
     _ipfsClient;
     constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig) {
-        this._ipfsClient = new ipfsClient(_spiderConfig.ipfsHost, _spiderConfig.ipfsPort, { protocol: 'http' });
+        this._ipfsClient = new ipfsClient(_spiderConfig.ipfsHost, _spiderConfig.ipfsPort, { protocol: _spiderConfig.ipfsProtocol });
     }
     public AddIpfsFile(filePath: string, callback: any) {
         let fileText = fs.readFileSync(filePath, "utf8");
@@ -24,6 +25,11 @@ export default class IpfsService implements IIpfsService {
             return callback(response[0].hash, fileText);
         });
     }
+    AddIpfsFileList(fileArray: Array<IpfsFile>, callback: any) {
+        return this._ipfsClient.add(fileArray, { recursive: true }, (err, response) => {
+            return callback(response);
+        });
+    }
     public AddIpfsFolder(folderPath: string, callback: any) {
         this._ipfsClient.addFromFs(folderPath, { recursive: true }, (err, result) => {
             result.forEach(file => {
@@ -34,10 +40,15 @@ export default class IpfsService implements IIpfsService {
             callback(result);
         })
     }
-
     public GetIpfsFile(ipfsHash: string, callback: any) {
         return this._ipfsClient.get(ipfsHash, (error, files) => {
             callback(error, files[0]);
+        });
+    }
+    public HashExists(ipfsHash: string, callback: any) {
+        return this._ipfsClient.get(ipfsHash, (error, files) => {
+            let exists = files ? true : false;
+            callback(exists);
         });
     }
 }

@@ -1,5 +1,6 @@
 export enum ContentType {
     Hash = "hash",
     Folder = "folder",
-    File = "file"
+    File = "file",
+    Zip = "zip"
 }
