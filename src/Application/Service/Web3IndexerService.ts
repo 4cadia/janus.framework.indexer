@@ -22,9 +22,10 @@ export default class Web3IndexerService implements IWeb3IndexerService {
                 indexedFile.Success = validation.isValid();
                 indexedFile.Errors = validation.getFailureMessages();
             }
+            
             if (!indexedFile.IsHtml || !indexedFile.Success) {
                 this._indexerCount++;
-                callback(indexedFile, this._indexerCount);
+                return callback(indexedFile, this._indexerCount);
             }
             else {
                 await this._indexerSm.methods.addWebSite(indexedFile.IpfsHash,

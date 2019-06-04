@@ -11,7 +11,7 @@ import IpfsFile from '../../Domain/Entity/IpfsFile';
 export default class IpfsService implements IIpfsService {
     _ipfsClient;
     constructor(@inject("SpiderConfig") private _spiderConfig: SpiderConfig) {
-        this._ipfsClient = new ipfsClient(_spiderConfig.ipfsHost, _spiderConfig.ipfsPort, { protocol: 'https' });
+        this._ipfsClient = new ipfsClient(_spiderConfig.ipfsHost, _spiderConfig.ipfsPort, { protocol: _spiderConfig.ipfsProtocol });
     }
     public AddIpfsFile(filePath: string, callback: any) {
         let fileText = fs.readFileSync(filePath, "utf8");
@@ -40,10 +40,15 @@ export default class IpfsService implements IIpfsService {
             callback(result);
         })
     }
-
     public GetIpfsFile(ipfsHash: string, callback: any) {
         return this._ipfsClient.get(ipfsHash, (error, files) => {
             callback(error, files[0]);
+        });
+    }
+    public HashExists(ipfsHash: string, callback: any) {
+        return this._ipfsClient.get(ipfsHash, (error, files) => {
+            let exists = files ? true : false;
+            callback(exists);
         });
     }
 }

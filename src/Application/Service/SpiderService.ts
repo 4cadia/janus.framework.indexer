@@ -1,5 +1,6 @@
 const DOMParser = require('xmldom').DOMParser;
 const Path = require('path');
+const isHtml = require('is-html');
 import { injectable, inject } from "tsyringe";
 import JSZip from "jszip";
 import IIpfsService from "../Interface/IIpfsService";
@@ -18,11 +19,11 @@ export default class SpiderService implements ISpiderService {
     constructor(@inject("IIpfsService") private _ipfsService: IIpfsService,
         @inject("IWeb3IndexerService") private _web3IndexerService: IWeb3IndexerService) {
     }
-    AddContent(IndexRequest: IndexRequest, ownerAddress: string, callback: any) {
-        this.GetContent(IndexRequest, ownerAddress, (files) => {
+    AddContent(IndexRequest: IndexRequest, callback: any) {
+        this.GetContent(IndexRequest, (files) => {
             files.forEach(file => {
                 file = this.FillIndexedFile(file);
-                this._web3IndexerService.IndexFile(file, ownerAddress, (indexResult, indexCount) => {
+                this._web3IndexerService.IndexFile(file, IndexRequest.Address, (indexResult, indexCount) => {
                     file = indexResult;
                     if (indexCount == files.length)
                         return callback(files);
@@ -35,32 +36,31 @@ export default class SpiderService implements ISpiderService {
         if (!file.Content)
             return file;
 
+        file.IsHtml = isHtml(file.Content);
+        if (!file.IsHtml)
+            return file;
+
         let htmlData = new HtmlData();
         let htmlDoc = new DOMParser({
             errorHandler: {
                 warning: null,
-                error: null, fatalError: null
+                error: null,
+                fatalError: null
             }
         }).parseFromString(file.Content, "text/html");
         let tagsArray = GetMetaTag(htmlDoc, "keywords");
-        file.IsHtml = tagsArray ? true : false;
-        if (file.IsHtml) {
-            htmlData.Title = GetTitleValue(htmlDoc);
-            htmlData.Description = GetMetaTag(htmlDoc, "description");
-            htmlData.Tags = tagsArray.split(",");
-            file.HtmlData = htmlData;
-            let validator = new SpiderValidator();
-            let validationResult = validator.ValidateHtmlData(htmlData);
-            file.Success = validationResult.isValid();
-            file.Errors = validationResult.getFailureMessages();
-        }
-
+        htmlData.Title = GetTitleValue(htmlDoc);
+        htmlData.Description = GetMetaTag(htmlDoc, "description");
+        htmlData.Tags = tagsArray ? tagsArray.split(",") : null;
+        file.HtmlData = htmlData;
+        let validator = new SpiderValidator();
+        let validationResult = validator.ValidateHtmlData(htmlData);
+        file.Success = validationResult.isValid();
+        file.Errors = validationResult.getFailureMessages();
         return file;
     }
-
     private ChangeToMainHash(mainHash: string, files: IndexedFile[]): IndexedFile[] {
         let result = new Array<IndexedFile>();
-
         files.forEach(file => {
             let changedFile = new IndexedFile();
             changedFile.IpfsHash = mainHash;
@@ -75,7 +75,6 @@ export default class SpiderService implements ISpiderService {
 
         return result;
     }
-
     private GetMainFolder(content: string): string {
         let splitedContent = content.split('\\');
         let mainFolder = splitedContent[splitedContent.length - 1];
@@ -85,8 +84,7 @@ export default class SpiderService implements ISpiderService {
 
         return mainFolder;
     }
-
-    GetContent(indexRequest: IndexRequest, ownerAddress: string, callback: any) {
+    GetContent(indexRequest: IndexRequest, callback: any) {
         let files = new Array<IndexedFile>();
         switch (indexRequest.ContentType) {
             case ContentType.File:
@@ -100,7 +98,6 @@ export default class SpiderService implements ISpiderService {
                 break;
             case ContentType.Folder:
                 let mainFolder = this.GetMainFolder(indexRequest.Content);
-
                 this._ipfsService.AddIpfsFolder(indexRequest.Content, (filesResult) => {
 
                     let mainHash: string;
@@ -116,9 +113,7 @@ export default class SpiderService implements ISpiderService {
                         file.Content = f.fileText;
                         files.push(file);
                     });
-
                     let result = this.ChangeToMainHash(mainHash, files);
-
                     callback(result);
                 });
                 break;
