@@ -153,7 +153,8 @@ export default class SpiderService implements ISpiderService {
                                                     files.push(file);
                                                 }
                                             });
-                                            callback(files);
+                                            let rootFolderHash = (<any>ipfsFiles[ipfsFiles.length - 1]).hash;
+                                            callback(this.ChangeToMainHash(rootFolderHash, files));
                                         });
                                     }
                                 });
