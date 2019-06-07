@@ -48,10 +48,16 @@ export default class SpiderService implements ISpiderService {
                 fatalError: null
             }
         }).parseFromString(file.Content, "text/html");
-        let tagsArray = GetMetaTag(htmlDoc, "keywords");
+        let tags = GetMetaTag(htmlDoc, "keywords");
         htmlData.Title = GetTitleValue(htmlDoc);
         htmlData.Description = GetMetaTag(htmlDoc, "description");
-        htmlData.Tags = tagsArray ? tagsArray.split(",") : null;
+        if (tags) {
+            let tagsArray = tags.split(",");
+            htmlData.Tags = new Array();
+            tagsArray.forEach(t => {
+                htmlData.Tags.push(t.trim());
+            });
+        }
         file.HtmlData = htmlData;
         let validator = new SpiderValidator();
         let validationResult = validator.ValidateHtmlData(htmlData);
@@ -153,7 +159,8 @@ export default class SpiderService implements ISpiderService {
                                                     files.push(file);
                                                 }
                                             });
-                                            callback(files);
+                                            let rootFolderHash = (<any>ipfsFiles[ipfsFiles.length - 1]).hash;
+                                            callback(this.ChangeToMainHash(rootFolderHash, files));
                                         });
                                     }
                                 });

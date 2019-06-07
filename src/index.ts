@@ -50,10 +50,9 @@ export default class Spider {
 // connector.start().then(() => {
 //     let provider = connector.getProvider();
 //     let indexRequest = new IndexRequest();
-//     indexRequest.Content = "C:\\Users\\Victor Hugo Ramos\\Downloads\\TesteVictor\\4files2\\4files";
+//     indexRequest.Content = "C:\\Users\\Victor Hugo Ramos\\Desktop\\front";
 //     indexRequest.ContentType = ContentType.Folder;
 //     indexRequest.Address = "0xB8C0DF194E38EeF45F36Bd8fBbe41893ccc16D20";
-    
 //     Bootstrapper.RegisterServices(provider);
 //     let config = Bootstrapper.Resolve<SpiderConfig>("SpiderConfig");
 //     let spiderService = Bootstrapper.Resolve<ISpiderService>("ISpiderService");
