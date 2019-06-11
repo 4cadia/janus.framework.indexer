@@ -57,6 +57,6 @@ export default class IndexRequestValidator extends AbstractValidator<IndexReques
     }
     public ValidateZipFile(content: string, callback: any) {
         let zip = new JSZip();
-        zip.loadAsync(content).then(zipFiles => { callback(zipFiles.folder()); }, () => { callback(); })
+        zip.loadAsync(content, { base64: true }).then(zipFiles => { callback(zipFiles.folder()); }, () => { callback(); })
     }
 }
