@@ -134,39 +134,46 @@ export default class SpiderService implements ISpiderService {
                 });
                 break;
             case ContentType.Zip:
-                let fileArray = new Array<IpfsFile>();
-                var zip = new JSZip();
-                zip.loadAsync(indexRequest.Content).then(
-                    zipFiles => {
-                        let fileCount = 0;
-                        fileCount = zipFiles.folder().filter((fn, f) => !f.dir).length;
-                        zipFiles.forEach((fileName, file) => {
-                            if (!file.dir) {
-                                file.async("text").then(fileContent => {
-                                    let ipfsFile = new IpfsFile();
-                                    ipfsFile.path = fileName;
-                                    ipfsFile.content = Buffer.from(fileContent);
-                                    fileArray.push(ipfsFile);
-                                    if (fileArray.length == fileCount) {
-                                        this._ipfsService.AddIpfsFileList(fileArray, (fileResponse) => {
-                                            let ipfsFiles = Array.from(fileResponse);
-                                            ipfsFiles.forEach(ipfsFile => {
-                                                let fileArrayItem = fileArray.find(f => { return f.path == (<any>ipfsFile).path });
-                                                if (fileArrayItem) {
-                                                    let file = new IndexedFile();
-                                                    file.IpfsHash = (<any>ipfsFile).hash;
-                                                    file.Content = fileArrayItem.content.toString();
-                                                    files.push(file);
-                                                }
+                let reader = new FileReader();
+                reader.onload = () => {
+                    indexRequest.Content = reader.result.slice(
+                        (<string>reader.result).indexOf("base64") + 7
+                    );
+                    let fileArray = new Array<IpfsFile>();
+                    var zip = new JSZip();
+                    zip.loadAsync(indexRequest.Content, { base64: true }).then(
+                        zipFiles => {
+                            let fileCount = 0;
+                            fileCount = zipFiles.folder().filter((fn, f) => !f.dir).length;
+                            zipFiles.forEach((fileName, file) => {
+                                if (!file.dir) {
+                                    file.async("base64").then(fileContent => {
+                                        let ipfsFile = new IpfsFile();
+                                        ipfsFile.path = fileName;
+                                        ipfsFile.content = Buffer.from(fileContent, "base64");
+                                        fileArray.push(ipfsFile);
+                                        if (fileArray.length == fileCount) {
+                                            this._ipfsService.AddIpfsFileList(fileArray, (fileResponse) => {
+                                                let ipfsFiles = Array.from(fileResponse);
+                                                ipfsFiles.forEach(ipfsFile => {
+                                                    let fileArrayItem = fileArray.find(f => { return f.path == (<any>ipfsFile).path });
+                                                    if (fileArrayItem) {
+                                                        let file = new IndexedFile();
+                                                        file.IpfsHash = (<any>ipfsFile).hash;
+                                                        file.Content = fileArrayItem.content.toString();
+                                                        files.push(file);
+                                                    }
+                                                });
+                                                let rootFolderHash = (<any>ipfsFiles[ipfsFiles.length - 1]).hash;
+                                                callback(this.ChangeToMainHash(rootFolderHash, files));
                                             });
-                                            let rootFolderHash = (<any>ipfsFiles[ipfsFiles.length - 1]).hash;
-                                            callback(this.ChangeToMainHash(rootFolderHash, files));
-                                        });
-                                    }
-                                });
-                            }
+                                        }
+                                    });
+                                }
+                            });
                         });
-                    });
+                };
+                reader.readAsDataURL(indexRequest.Content);
                 break;
         }
     }
