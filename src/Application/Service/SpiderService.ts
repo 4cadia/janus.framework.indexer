@@ -182,7 +182,9 @@ export function GetMetaTag(ipfsHtml, metaName): string {
     let metas = ipfsHtml.getElementsByTagName('meta');
     for (let i = 0; i < metas.length; i++) {
         if (metas[i].getAttribute('name') === metaName) {
-            return metas[i].getAttribute('content');
+            let rawMeta = metas[i].getAttribute('content');
+            let formattedMeta = rawMeta.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            return formattedMeta;
         }
     }
     return null;
