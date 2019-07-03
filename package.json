@@ -24,13 +24,14 @@
     "is-html": "^2.0.0",
     "jszip": "^3.2.1",
     "jszip-utils": "0.0.2",
+    "keyword-extractor": "0.0.16",
     "node-metamask": "^1.1.2",
     "path": "^0.12.7",
     "reflect-metadata": "^0.1.13",
     "scrypt": "^6.0.3",
     "tsyringe": "^3.2.0",
-    "web3": "^1.0.0-beta.54",
-    "xmldom": "^0.1.27"
+    "unfluff": "^3.2.0",
+    "web3": "^1.0.0-beta.54"
   },
   "devDependencies": {
     "@types/jest": "^24.0.12",
