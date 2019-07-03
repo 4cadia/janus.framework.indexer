@@ -1,6 +1,6 @@
-const DOMParser = require('xmldom').DOMParser;
-const Path = require('path');
 const isHtml = require('is-html');
+const keywordExtractor = require("keyword-extractor");
+const unfluff = require('unfluff');
 import { injectable, inject } from "tsyringe";
 import JSZip from "jszip";
 import IIpfsService from "../Interface/IIpfsService";
@@ -12,6 +12,8 @@ import ISpiderService from "../Interface/ISpiderService";
 import { ContentType } from "../../Domain/Entity/ContentType";
 import SpiderValidator from '../../Application/Validator/SpiderValidator';
 import IpfsFile from "../../Domain/Entity/IpfsFile";
+import { HtmlLanguage } from '../../Domain/Entity/HtmlLanguage';
+import ArrayHelper from '../../Infra/Helper/ArrayHelper';
 
 
 @injectable()
@@ -41,29 +43,58 @@ export default class SpiderService implements ISpiderService {
             return file;
 
         let htmlData = new HtmlData();
-        let htmlDoc = new DOMParser({
-            errorHandler: {
-                warning: null,
-                error: null,
-                fatalError: null
-            }
-        }).parseFromString(file.Content, "text/html");
-        let tags = GetMetaTag(htmlDoc, "keywords");
-        htmlData.Title = GetTitleValue(htmlDoc);
-        htmlData.Description = GetMetaTag(htmlDoc, "description");
+        let htmlDoc = unfluff(file.Content);
+        let tags = htmlDoc.keywords;
+        let tagSuggestion = this.GetTagSuggestion(htmlDoc);
+        htmlData.Title = htmlDoc.title;
+        htmlData.Description = htmlDoc.description;
+        htmlData.Tags = new Array();
+        
         if (tags) {
+            tags = GetNormalizedText(tags);
             let tagsArray = tags.split(",");
-            htmlData.Tags = new Array();
             tagsArray.forEach(t => {
                 htmlData.Tags.push(t.trim());
             });
         }
+
+        if (tagSuggestion)
+            htmlData.Tags = ArrayHelper.Merge(htmlData.Tags, tagSuggestion);
+
         file.HtmlData = htmlData;
         let validator = new SpiderValidator();
         let validationResult = validator.ValidateHtmlData(htmlData);
         file.Success = validationResult.isValid();
         file.Errors = validationResult.getFailureMessages();
         return file;
+    }
+
+    private GetTagSuggestion(htmlDoc: any): Array<string> {
+        let htmlLang: HtmlLanguage = <HtmlLanguage>htmlDoc.lang;
+        let htmlLangName = HtmlLanguage[htmlLang];
+
+        if (!htmlLangName || !htmlDoc.text)
+            return null;
+
+        let tags = keywordExtractor.extract(GetNormalizedText(htmlDoc.text), {
+            language: htmlLangName,
+            remove_digits: true,
+            return_changed_case: true,
+            remove_duplicates: false
+        });
+
+        let reducedObj = tags.reduce(function (o, v) {
+            o[v] = o[v] || 0;
+            o[v]++;
+            return o;
+        }, {});
+
+        let sortedTags = Object.keys(reducedObj)
+            .filter((a) => reducedObj[a] > 1)
+            .sort(function (a, b) {
+                return reducedObj[b] - reducedObj[a];
+            });
+        return sortedTags.slice(0, 5);
     }
     private ChangeToMainHash(mainHash: string, files: IndexedFile[]): IndexedFile[] {
         let result = new Array<IndexedFile>();
@@ -192,4 +223,7 @@ export function GetMetaTag(ipfsHtml, metaName): string {
 export function GetTitleValue(ipfsHtml): string {
     let title = ipfsHtml.getElementsByTagName('title')[0];
     return title ? title.textContent : null;
+}
+export function GetNormalizedText(text: string) {
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
