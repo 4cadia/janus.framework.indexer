@@ -1,4 +1,4 @@
-Janus Framework Indexer
+# Janus Framework Indexer
 Indexer Framework is an interface shortcut that allows the user to access needed services to push a content in the blockchain and attach it in the Janus system. It also charges gas and tributes for this services, working as a facilitator.
 
 The indexer Framework end helps to publish and index the websites. Publish in the IPFS and return the valid hash or validate the ipfs hash entered and index the informations on the Janus platform.
