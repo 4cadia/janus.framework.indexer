@@ -1,11 +1,14 @@
 # Janus Framework Indexer
-Indexer Framework is an interface shortcut that allows the user to access needed services to push a content in the blockchain and attach it in the Janus system. It also charges gas and tributes for this services, working as a facilitator.
+Indexer Framework is an interface shortcut that allows the the developer access needed services to push a content in the blockchain and attach it in your Dapp.
 
-The indexer Framework end helps to publish and index the websites. Publish in the IPFS and return the valid hash or validate the ipfs hash entered and index the informations on the Janus platform.
+The Indexer Frontend helps to publish and index the websites. Publish in the IPFS and return the valid hash or validate the ipfs hash entered and index the informations on the Janus platform.
 
 
+![](header.png)
 
-Installation
+## Installation
+
+``` bash
 # install dependencies
 npm install
 
@@ -32,9 +35,20 @@ npm run fix
 
 # run build production and send the dist folder to another branch
 npm run deploy
-Contributing
-Fork it (https://github.com/4cadia/janus.framework.indexer/fork)
-Create your feature branch (git checkout -b feature/fooBar)
-Commit your changes (git commit -am 'Add some fooBar')
-Push to the branch (git push origin feature/fooBar)
-Create a new Pull Request
+```
+
+## Contributing
+
+1. Fork it (<https://github.com/4cadia/janus.framework.indexer/fork>)
+2. Create your feature branch (`git checkout -b feature/fooBar`)
+3. Commit your changes (`git commit -am 'Add some fooBar'`)
+4. Push to the branch (`git push origin feature/fooBar`)
+5. Create a new Pull Request
+
+<!-- Markdown link & img dfn's -->
+[npm-image]: https://img.shields.io/npm/v/datadog-metrics.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/datadog-metrics
+[npm-downloads]: https://img.shields.io/npm/dm/datadog-metrics.svg?style=flat-square
+[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
+[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
+[wiki]: https://github.com/yourname/yourproject/wiki
